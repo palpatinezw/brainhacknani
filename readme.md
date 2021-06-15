@@ -53,6 +53,7 @@ password: password in plaintext form
 circleName: name of the circle
 
 returns: where power is an integer >= 0
+
 `{
 	success: 1,
 	power: 0-9,
@@ -60,7 +61,9 @@ returns: where power is an integer >= 0
 	allowCreateFlairs: 0/1,
 	allowAcceptMembers: 0/1
 }` OR 
+
 `{ success: 0 }` for all failures (unauth, no flairs, no flairs allowed to be assigned etc)
+
 
 
 
