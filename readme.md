@@ -1,4 +1,4 @@
-# Dcoumentation for server
+# Documentation for server
 
 ## API endpoints:
 
@@ -103,4 +103,7 @@ How "power" works for the flairs is that 0 is the person with most abilities, an
 
 *host: https://flyyee-brainhackserver.herokuapp.com/*
 
-`fetch('https://flyyee-brainhackserver.herokuapp.com/create?username=bob&password=harambe');`
+`fetch('https://flyyee-brainhackserver.herokuapp.com/create?username=${username}&password=${password}')
+.then(response => response.json())
+.then(data => if (data.success == 1) { console.log("good") } );`
+
