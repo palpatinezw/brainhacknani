@@ -21,7 +21,7 @@ const Register = ({ navigation, setUsername, setPassword }) => {
             navigation.dispatch(
               CommonActions.reset({
                 index: 0,
-                routes: [{ name: 'ProtectedHome', params:{username, password}}],
+                routes: [{ name: 'ProtectedHome', params:{formUsername, formPassword}}],
               })
             );
         }

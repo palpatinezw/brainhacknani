@@ -23,7 +23,7 @@ export default function App() {
         <Stack.Screen name='login' component = {Login} options={{ title: 'Login' }}/>
         <Stack.Screen name='register' component = {Register} options={{ title: 'Register' }}/>
 
-        <Stack.Screen name='ProtectedHome' component = {ProtectedHome} options={{ title: 'Home' }} headerLeft={()=> null}/>
+        <Stack.Screen name='ProtectedHome' component = {ProtectedHome} options={{ title: 'Sigma' }} headerLeft={()=> null}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

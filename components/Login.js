@@ -10,7 +10,7 @@ import styles from '../styles/styles'
 const Login = ({ navigation }) => {
 
   const [password, setPassword] = useState();
-  const [username, setAccount] = useState();
+  const [username, setUsername] = useState();
 
   function handleLogin(){
 
@@ -18,6 +18,8 @@ const Login = ({ navigation }) => {
     fetch('https:/flyyee-brainhackserver.herokuapp.com/login?username='+username+'&password='+password)
     .then(response => response.json())
     .then(data => {
+        console.log(username)
+        console.log(password)
         if (data.success === 1) {
             navigation.dispatch(
               CommonActions.reset({
@@ -35,7 +37,7 @@ const Login = ({ navigation }) => {
     <View>
       <KeyboardAvoidingView behavior = {Platform.OS === 'ios' ? 'padding': 'height'}>
         <TextInput style = {styles.input} placeholder = {'Enter your username'} value = {null}
-        onChangeText ={(text) => setAccount(text)}
+        onChangeText ={(text) => setUsername(text)}
         />
       </KeyboardAvoidingView>
 
