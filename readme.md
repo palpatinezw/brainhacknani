@@ -45,7 +45,7 @@ password: password in plaintext form
 
 circleName: name of the circle
 
-circleVis: visibility of the circle (currently unused)
+circleVis: visibility of the circle ("private" for circles that require moderators to accept user's requests to join)
 
 *returns:* JSON Object with success key set to 0/1 for failure/success
 
@@ -66,7 +66,6 @@ returns: where power is an integer >= 0
 `{
 	success: 1,
 	power: 0-9,
-	allowAssignFlairs: 0/1,
 	allowCreateFlairs: 0/1,
 	allowAcceptMembers: 0/1
 }` OR 
@@ -91,7 +90,7 @@ flairName: name of the flair user is intending to create
 
 flairPower: power of the flair. Must be larger power then the user's power found from `/create_flair_info`
 
-flairAssign: 0/1. If the user is found to be able to assign flairs from `/create_flair_info` (eg. `allowAssignFlairs: 1`), this value for the target flair can be set to 0/1, corresponding to dis/allow. Conversely, if the user is unable to assign flairs, he can only create roles that cannot assign flairs (eg. `flairAssign: 0`)
+flairAssign **(deprecated)**: 0/1. If the user is found to be able to assign flairs from `/create_flair_info` (eg. `allowAssignFlairs: 1`), this value for the target flair can be set to 0/1, corresponding to dis/allow. Conversely, if the user is unable to assign flairs, he can only create roles that cannot assign flairs (eg. `flairAssign: 0`)
 
 flairCreate: 0/1. Same concept as flairAssign.
 
@@ -122,7 +121,6 @@ Returns:
 			id: 1, // unique id on server
 			active: 0/1, // whether flair should be shown to user or hidden
 			power: 3, // integer >= 0
-			allowAssignFlair: 0/1,
 			allowCreateFlair: 0/1,
 			allowAcceptMembers: 0/1
 		}
@@ -253,6 +251,81 @@ Returns:
 ```
 {
 	success: 0/1,
+}
+```
+
+<br>
+
+**`/accept_member_info` (untested) **
+
+*Function: view the users that have sent a request to join the private server. Checks if user has privileges to accept new members.*
+
+*access method: GET with query params*
+
+username: username
+
+password: password in plaintext form
+
+circleName: name of the circle
+
+Returns: 
+
+```
+{
+	success: 0/1,
+	pendingUsers: ["bob", "jon"]
+}
+```
+
+<br>
+
+**`/accept_member` (untested)** 
+
+*Function: accept one user that has sent a request to join the private server. Checks if user has privileges to accept new members.*
+
+*access method: GET with query params*
+
+username: username
+
+password: password in plaintext form
+
+circleName: name of the circle
+
+targetUsername: username of the user trying to join the server
+
+action: "ban/decline/accept" the action to be taken on the user
+
+Returns: 
+
+```
+{
+	success: 0/1,
+}
+```
+
+<br>
+
+**`/kick` (untested) **
+
+*Function: kicks user from a circle. Additional use: ban a user regardless of whether he is currently in the server.*
+
+*access method: GET with query params*
+
+username: username
+
+password: password in plaintext form
+
+circleName: name of the circle
+
+targetUsername: username of the user trying to join the server
+
+ban: 0/1 whether the additional use should be exercised
+
+Returns: 
+
+```
+{
+	success: 0/1
 }
 ```
 

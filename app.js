@@ -174,6 +174,15 @@ app.get('/create_circle', async (req, res) => {
                                 // allowAssignFlairs: 1,
                                 allowCreateFlairs: 1,
                                 allowAcceptMembers: 1
+                            },
+                            {
+                                name: "default",
+                                id: 1,
+                                active: 1,
+                                power: 10,
+                                // allowAssignFlairs: 1,
+                                allowCreateFlairs: 0,
+                                allowAcceptMembers: 0
                             }
                         ], infoText: "Hey! I just created my own circle." }
                         const result = await circles.insertOne(circle);
@@ -495,7 +504,7 @@ app.get('/assign_flair', async (req, res) => {
                 // checks for all required params
                 res()
             } else {
-                let targetUsers = req.query.targetUsers.split(",")
+                let targetUsers = req.query.targetUsernames.split(",")
                 let flairNames = req.query.flairNames.split("0")
                 for (let x = 0; x < flairNames.length; x++) {
                     flairNames[x] = flairNames[x].split(",")
@@ -518,7 +527,7 @@ app.get('/assign_flair', async (req, res) => {
                                             availableFlairs.push(testflair)
                                         }
                                     }
-                                    targetUsernames.forEach((targetUser, idx) => {
+                                    targetUsers.forEach((targetUser, idx) => {
                                         let intendedFlairs = flairNames[idx]
                                         for (let intendedFlair of intendedFlairs) {
                                             let intendedFlair_id = -1
@@ -533,9 +542,11 @@ app.get('/assign_flair', async (req, res) => {
                                                 }
                                                 if (flairIsAvailable) {
                                                     res_value.success = 1
-                                                    res_value.availableFlairs = availableFlairs
-                                                    if (intendedFlair_id in circle.members[targetUser]) {
+                                                    // res_value.availableFlairs = availableFlairs
+                                                    console.log(circle.members[targetUser])
+                                                    if (circle.members[targetUser].includes(intendedFlair_id)) {
                                                         // target user already has the flair so remove it
+                                                        // console.log(circle.members[targetUser])
                                                         circle.members[targetUser].splice(circle.members[targetUser].indexOf(intendedFlair_id), 1)
                                                     } else {
                                                         circle.members[targetUser].push(intendedFlair_id)
@@ -544,6 +555,7 @@ app.get('/assign_flair', async (req, res) => {
                                             }
                                         }
                                     })
+                                    SetCircle(circle.name, circle)
                                 }
                             })
                         }
@@ -583,7 +595,7 @@ app.get('/join_circle', async (req, res) => {
                             } else {
                                 // successfully joined public server
                                 res_value.success = 1
-                                circle.members[req.query.username] = []
+                                circle.members[req.query.username] = [1]
                             }
                             SetCircle(req.query.circleName, circle) // update circle with new info
                         }
@@ -642,7 +654,9 @@ app.get('/leave_circle', async (req, res) => {
                 .then(async circleRes => {
                     if (circleRes.success) { // found target circle
                         let circle = circleRes.circle
-                        delete circle[req.query.username]
+                        delete circle.members[req.query.username]
+                        // console.log(circle)
+                        SetCircle(circle.name, circle)
                         res_value.success = 1
                     }
                 })
@@ -653,6 +667,126 @@ app.get('/leave_circle', async (req, res) => {
         res.json(res_value)
     })
 })
+
+app.get('/accept_member_info', async (req, res) => {
+    let res_value = {
+        success: 0
+    }
+    return new Promise(async (res, err) => {
+        if (!req.query.username || !req.query.password || !req.query.circleName) {
+                // checks for all required params
+                res()
+            } else {
+                await MinFlair(req.query.username, req.query.password, req.query.circleName)
+                .then(async minFlair => {
+                    if (minFlair.success) { // managed to find the user's flair creation abilities
+                        // flair intending to create is under valid permissions
+                        await GetCircle(req.query.username, req.query.password, req.query.circleName)
+                        .then(async circleRes => {
+                            if (circleRes.success) { // found target circle
+                                let circle = circleRes.circle
+                                if (minFlair.allowAcceptMembers) {
+                                    res_value.success = 1
+                                    res_value.pendingUsers = circle.pendingUsers
+                                }
+                            }
+                        })
+                    }
+                })
+                res()
+            }
+    })
+    .then(result => {
+        res.json(res_value)
+    })
+})
+
+app.get('/accept_member', async (req, res) => {
+    let res_value = {
+        success: 0
+    }
+    return new Promise(async (res, err) => {
+        if (!req.query.username || !req.query.password || !req.query.circleName
+            || !req.query.targetUsername || !req.query.action) {
+                // checks for all required params
+                res()
+            } else {
+                await MinFlair(req.query.username, req.query.password, req.query.circleName)
+                .then(async minFlair => {
+                    if (minFlair.success) { // managed to find the user's flair creation abilities
+                        // flair intending to create is under valid permissions
+                        await GetCircle(req.query.username, req.query.password, req.query.circleName)
+                        .then(async circleRes => {
+                            if (circleRes.success) { // found target circle
+                                let circle = circleRes.circle
+                                if (minFlair.allowAcceptMembers) {
+                                    if (circle.pendingUsers.includes(targetUsername)) {
+                                        if (req.query.action == "ban") {
+                                            circle.pendingUsers.splice(circle.pendingUsers.indexOf(targetUsername), 1)
+                                            circle.bannedUsers.push(targetUsername)
+                                        } else if (req.query.action == "decline") {
+                                            circle.pendingUsers.splice(circle.pendingUsers.indexOf(targetUsername), 1)
+                                        }
+                                         else {
+                                            circle.pendingUsers.splice(circle.pendingUsers.indexOf(targetUsername), 1)
+                                            circle.members[targetUsername] = [1]
+                                        }
+                                        SetCircle(circle.name, circle)
+                                        res_value.success = 1
+                                    }
+                                }
+                            }
+                        })
+                    }
+                })
+                res()
+            }
+    })
+    .then(result => {
+        res.json(res_value)
+    })
+})
+
+app.get('/kick', async (req, res) => {
+    let res_value = {
+        success: 0
+    }
+    return new Promise(async (res, err) => {
+        if (!req.query.username || !req.query.password || !req.query.circleName
+            || !req.query.targetUsername || !req.query.ban) {
+                // checks for all required params
+                res()
+            } else {
+                await MinFlair(req.query.username, req.query.password, req.query.circleName)
+                .then(async minFlair => {
+                    if (minFlair.success) { // managed to find the user's flair creation abilities
+                        // flair intending to create is under valid permissions
+                        await GetCircle(req.query.username, req.query.password, req.query.circleName)
+                        .then(async circleRes => {
+                            if (circleRes.success) { // found target circle
+                                let circle = circleRes.circle
+                                if (minFlair.allowAcceptMembers) {
+                                    if (targetUsername in circle.members) {
+                                        delete circle.members[req.query.targetUsername]
+                                    }
+                                    if (req.query.ban) {
+                                        circle.bannedUsers.push(targetUsername)
+                                    }
+                                    SetCircle(circle.name, circle)
+                                    res_value.success = 1
+                                }
+                            }
+                        })
+                    }
+                })
+                res()
+            }
+    })
+    .then(result => {
+        res.json(res_value)
+    })
+})
+
 
 app.listen(port, () => {
 	console.log(`Example app listening at http://localhost:${port}`)
