@@ -4,6 +4,8 @@
 
 **`/create`**
 
+*Function: create an account on the platform*
+
 *access method: GET with query params*
 
 username: username
@@ -17,6 +19,8 @@ password: password in plaintext form
 
 **`/login`**
 
+*Function: login to the platform*
+
 *access method: GET with query params*
 
 username: username
@@ -28,6 +32,8 @@ password: password in plaintext form
 <br>
 
 **`/create_circle`**
+
+*Function: create a circle with specified settings*
 
 *access method: GET with query params*
 
@@ -70,6 +76,8 @@ returns: where power is an integer >= 0
 <br>
 
 **`/create_flair`**
+
+*Function: create a specified flair*
 
 *access method: GET with query params*
 
@@ -124,7 +132,9 @@ Returns:
 
 <br>
 
-**`/assign_flair_info`**
+**`/assign_flair`**
+
+*Function: assign specified flairs to specified users*
 
 *access method: GET with query params*
 
@@ -134,7 +144,7 @@ password: password in plaintext form
 
 circleName: name of the circle
 
-flairNames: one string that represents the name of the flairs to be applied to each of the users. The string should follow this format: `"a,b0c,d"` where a and b are the flairs to be applied to the first user, and c and d are the flairs to be applied to the user (eg. 0 is used as a primary separator and , is used as the secondary separator). The clientside implementation from a 2D array is as follows. Alternate usage: pass only one string that represents the name of the one flair to be applied to each of the users (eg. `"a"`).
+flairNames: one string that represents the name of the flairs to be applied to each of the users. The string should follow this format: `"a,b0c,d"` where a and b are the flairs to be applied to the first user, and c and d are the flairs to be applied to the user (eg. 0 is used as a primary separator and , is used as the secondary separator). The clientside implementation from a 2D array is as follows. Each flair acts as a toggle (eg. if a user already has the flair, it is removed). Alternate usage: pass only one string that represents the name of the one flair to be applied to each of the users (eg. `"a"`).
 
 ```
 x = [["a", "b"], ["c", "d"]]
@@ -153,6 +163,8 @@ Returns: JSON Object with success key set to 0/1 for failure/success. 1 only ind
 
 **`/get_members`**
 
+*Function: lists the members in a circle. User has to be a member of the circle.*
+
 *access method: GET with query params*
 
 username: username
@@ -169,6 +181,78 @@ Returns: (the value of members is another object, with member usernames as keys,
 	members: {
 		bob: ["Owner"]
 	}
+}
+```
+
+<br>
+
+**`/join_circle`**
+
+*Function: join a specified circle*
+
+*access method: GET with query params*
+
+username: username
+
+password: password in plaintext form
+
+circleName: name of the circle
+
+Returns: 
+
+```
+{
+	success: 0/1,
+	info: "banned/pending/joined/unaffected"
+}
+```
+
+Pending means having sent a request for a private server that has not been un/accepted. Unaffected means none of the previous statuses. It is possible that the info value is not set if success is 0, if an error was thrown.
+
+<br>
+
+**`/join_circle_status`**
+
+*Function: find the user's status on the joining process of a specified circle*
+
+*access method: GET with query params*
+
+username: username
+
+password: password in plaintext form
+
+circleName: name of the circle
+
+Returns: 
+
+```
+{
+	success: 0/1,
+	info: "banned/pending/joined/unaffected"
+}
+```
+
+Pending means having sent a request for a private server that has not been un/accepted. Unaffected means none of the previous statuses. It is possible that the info value is not set if success is 0, if an error was thrown.
+
+<br>
+
+**`/leave_circle`**
+
+*Function: leave a specified circle. Checks if user is in the circle first.*
+
+*access method: GET with query params*
+
+username: username
+
+password: password in plaintext form
+
+circleName: name of the circle
+
+Returns: 
+
+```
+{
+	success: 0/1,
 }
 ```
 

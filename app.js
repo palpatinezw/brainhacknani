@@ -165,13 +165,13 @@ app.get('/create_circle', async (req, res) => {
                                 // flairs: [0],
                                 // visroles: ["owner"],
                                 // hidroles: ["creator", "flair0"]
-                        }, flairs: [
+                        }, pendingUsers: [], bannedUsers: [], flairs: [
                             {
                                 name: "Owner",
                                 id: 0,
                                 active: 1,
                                 power: 0,
-                                allowAssignFlairs: 1,
+                                // allowAssignFlairs: 1,
                                 allowCreateFlairs: 1,
                                 allowAcceptMembers: 1
                             }
@@ -199,7 +199,7 @@ app.get('/create_circle', async (req, res) => {
     
 })
 
-async function GetCircle(username, password, circleName) { 
+async function GetCircle(username, password, circleName, dontbelong = false) { 
     // includes user auth and checks if user is in circle
     // circle found is passed under .circle
     return new Promise(async (res, err) => {
@@ -225,10 +225,13 @@ async function GetCircle(username, password, circleName) {
                     const query = { name: circleName };
                     const circle = await circles.findOne(query);
                     if (circle) {
-                        if (username in circle.members) {
+                        if (dontbelong) {
                             res_value.success = 1
                             res_value.circle = circle
-                        }   
+                        } else if (username in circle.members) {
+                            res_value.success = 1
+                            res_value.circle = circle
+                        } 
                     }
                 }             
             } finally {
@@ -322,7 +325,7 @@ async function MinFlair(username, password, circleName) {
                                 res_value = {
                                     success: 1,
                                     power: minFlair.power,
-                                    allowAssignFlairs: minFlair.allowAssignFlairs,
+                                    // allowAssignFlairs: minFlair.allowAssignFlairs,
                                     allowCreateFlairs: minFlair.allowCreateFlairs,
                                     allowAcceptMembers: minFlair.allowAcceptMembers
                                 }
@@ -357,7 +360,7 @@ app.get('/create_flair', async (req, res) => {
     }
     return new Promise(async (res, err) => {
         if (!req.query.username || !req.query.password || !req.query.circleName 
-            || !req.query.flairName || !req.query.flairPower || !req.query.flairAssign
+            || !req.query.flairName || !req.query.flairPower /*|| !req.query.flairAssign*/
             || !req.query.flairCreate || !req.query.flairAccept) {
                 // checks for all required params
                 res()
@@ -367,7 +370,7 @@ app.get('/create_flair', async (req, res) => {
                     if (minFlair.success) { // managed to find the user's flair creation abilities
                         if (req.query.flairPower >= minFlair.power) {
                             if (req.query.flairCreate <= minFlair.allowCreateFlairs && 
-                                req.query.flairAssign <= minFlair.allowAssignFlairs && 
+                                /*req.query.flairAssign <= minFlair.allowAssignFlairs && */
                                 req.query.flairAccept <= minFlair.allowAcceptMembers) {
                                     // flair intending to create is under valid permissions
                                     await GetCircle(req.query.username, req.query.password, req.query.circleName)
@@ -387,7 +390,7 @@ app.get('/create_flair', async (req, res) => {
                                                     id: circleRes.circle.flairs.length,
                                                     active: 1,
                                                     power: req.query.flairPower,
-                                                    allowAssignFlairs: req.query.flairAssign,
+                                                    /*allowAssignFlairs: req.query.flairAssign,*/
                                                     allowCreateFlairs: req.query.flairCreate,
                                                     allowAcceptMembers: req.query.flairAccept
                                                 }) // updates the current circle and updates the server with it
@@ -549,6 +552,103 @@ app.get('/assign_flair', async (req, res) => {
                 res()
             }
     })
+    .then(result => {
+        res.json(res_value)
+    })
+})
+
+app.get('/join_circle', async (req, res) => {
+    let res_value = {
+        success: 0
+    }
+    return new Promise(async (res, err) => {
+        if (!req.query.username || !req.query.password || !req.query.circleName) {
+                // checks for all required params
+                res()
+            } else {
+                await GetCircle(req.query.username, req.query.password, req.query.circleName, true)
+                .then(async circleRes => {
+                    if (circleRes.success) { // found target circle
+                        let circle = circleRes.circle
+                        if (req.query.username in circle.bannedUsers) {
+                            res_value.info = "banned"
+                        } else if (req.query.username in circle.members) {
+                            res_value.info = "joined"
+                        } else if (req.query.username in circle.pendingUsers) {
+                            res_value.info = "pending"
+                        } else {
+                            if (circle.vis == "private") {
+                                res_value.success = 1
+                                circle.pendingUsers.push(req.query.username)
+                            } else {
+                                // successfully joined public server
+                                res_value.success = 1
+                                circle.members[req.query.username] = []
+                            }
+                            SetCircle(req.query.circleName, circle) // update circle with new info
+                        }
+                    }
+                })
+                res()
+            }
+        })
+    .then(result => {
+        res.json(res_value)
+    })
+})
+
+app.get('/join_circle_status', async (req, res) => {
+    let res_value = {
+        success: 0
+    }
+    return new Promise(async (res, err) => {
+        if (!req.query.username || !req.query.password || !req.query.circleName) {
+                // checks for all required params
+                res()
+            } else {
+                await GetCircle(req.query.username, req.query.password, req.query.circleName, true)
+                .then(async circleRes => {
+                    if (circleRes.success) { // found target circle
+                        let circle = circleRes.circle
+                        if (req.query.username in circle.bannedUsers) {
+                            res_value.info = "banned"
+                        } else if (req.query.username in circle.members) {
+                            res_value.info = "joined"
+                        } else if (req.query.username in circle.pendingUsers) {
+                            res_value.info = "pending"
+                        } else {
+                            res_value.info = "unaffected"
+                        }
+                    }
+                })
+                res()
+            }
+        })
+    .then(result => {
+        res.json(res_value)
+    })
+})
+
+app.get('/leave_circle', async (req, res) => {
+    let res_value = {
+        success: 0
+    }
+    return new Promise(async (res, err) => {
+        if (!req.query.username || !req.query.password || !req.query.circleName) {
+                // checks for all required params
+                res()
+            } else {
+                await GetCircle(req.query.username, req.query.password, req.query.circleName)
+                .then(async circleRes => {
+                    if (circleRes.success) { // found target circle
+                        let circle = circleRes.circle
+                        delete circle[req.query.username]
+                        res_value.success = 1
+                    }
+                })
+                res()
+            }
+        })
     .then(result => {
         res.json(res_value)
     })
