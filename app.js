@@ -75,7 +75,7 @@ app.get('/create', async (req, res) => {
     }
 })
 
-async function auth(username, password) {
+async function Auth(username, password) {
     return new Promise(async (res, err) => {
         let res_value = {
             success: 0
@@ -126,7 +126,7 @@ app.get('/login', async (req, res) => {
         success: 0
     }
 
-    await auth(req.query.username, req.query.password)
+    await Auth(req.query.username, req.query.password)
     .then(res => res_value = res)
 
     res.json(res_value)
@@ -149,7 +149,7 @@ app.get('/create_circle', async (req, res) => {
 
                 await mongoClient.connect();
                 const database = mongoClient.db('sigma');
-                let userLegit = await auth(req.query.username, req.query.password)
+                let userLegit = await Auth(req.query.username, req.query.password)
                 userLegit = userLegit.success
 
                 if (userLegit) {
@@ -198,13 +198,13 @@ app.get('/create_circle', async (req, res) => {
     
 })
 
-app.get('/create_flair_info', async (req, res) => {
-    let res_value = {
-        success: 0
-    }
-    await new Promise(async (res, err) => {
-        if (!req.query.username || !req.query.password || !req.query.circleName) {
-            res()
+async function GetCircle(username, password, circleName) {
+    return new Promise(async (res, err) => {
+        let res_value = {
+            success: 0
+        }
+        if (!username || !password || !circleName) {
+            res(res_value)
         } else {
             try {
                 mongoClient = new MongoClient(_connstring, {
@@ -214,17 +214,90 @@ app.get('/create_flair_info', async (req, res) => {
 
                 await mongoClient.connect();
                 const database = mongoClient.db('sigma');
-                let userLegit = await auth(req.query.username, req.query.password)
+                let userLegit = await Auth(username, password)
                 userLegit = userLegit.success
 
                 if (userLegit) {
                     const circles = database.collection('circles');
-                    const query = { name: req.query.circleName };
+                    const query = { name: circleName };
+                    const circle = await circles.findOne(query);
+                    if (circle) {
+                        res_value.success = 1
+                        res_value.circle = circle
+                    }
+                }             
+            } finally {
+                await mongoClient.close();
+                res(res_value)
+            }
+        }
+    })
+}
+
+async function SetCircle(circleName, newcircleData) {
+    return new Promise(async (res, err) => {
+        let res_value = {
+            success: 0
+        }
+        if (!circleName || !newcircleData) {
+            res(res_value)
+        } else {
+            try {
+                mongoClient = new MongoClient(_connstring, {
+                    useNewUrlParser: true,
+                    useUnifiedTopology: true,
+                })
+
+                await mongoClient.connect();
+                const database = mongoClient.db('sigma');
+
+                const circles = database.collection('circles');
+                const query = { name: circleName };
+                const circle = await circles.findOne(query);
+                if (circle) {
+                    const options = {
+                        upsert: false, // do not create a document if no documents match the query
+                    };
+                    const result = await circles.replaceOne(query, newcircleData, options);
+                    if (result.modifiedCount === 1) {
+                        res_value.success = 1
+                    }
+                }
+            } finally {
+                await mongoClient.close();
+                res(res_value)
+            }
+        }
+    })
+}
+
+async function MinFlair(username, password, circleName) {
+    return new Promise(async (res, err) => {
+        let res_value = {
+            success: 0
+        }
+        if (!username || !password || !circleName) {
+            res(res_value)
+        } else {
+            try {
+                mongoClient = new MongoClient(_connstring, {
+                    useNewUrlParser: true,
+                    useUnifiedTopology: true,
+                })
+
+                await mongoClient.connect();
+                const database = mongoClient.db('sigma');
+                let userLegit = await Auth(username, password)
+                userLegit = userLegit.success
+
+                if (userLegit) {
+                    const circles = database.collection('circles');
+                    const query = { name: circleName };
                     const circle = await circles.findOne(query);
                     console.log(circle)
                     if (circle) {
-                        if (req.query.username in circle.members) {
-                            let userflairs = circle.members[req.query.username]
+                        if (username in circle.members) {
+                            let userflairs = circle.members[username]
                             let minFlairPower = -1
                             let minFlair
                             for (flairId in userflairs) {
@@ -254,12 +327,16 @@ app.get('/create_flair_info', async (req, res) => {
                 }             
             } finally {
                 await mongoClient.close();
-                res()
+                res(res_value)
             }
         }
     })
+}
+
+app.get('/create_flair_info', async (req, res) => {
+    await MinFlair(req.query.username, req.query.password, req.query.circleName)
     .then(result => {
-        res.json(res_value)
+        res.json(result)
     })
     .catch(result => {
         res.json({
@@ -267,6 +344,66 @@ app.get('/create_flair_info', async (req, res) => {
         })
     })
     
+})
+
+app.get('/create_flair', async (req, res) => {
+    let res_value = {
+        success: 0
+    }
+    return new Promise(async (res, err) => {
+        if (!req.query.username || !req.query.password || !req.query.circleName 
+            || !req.query.flairName || !req.query.flairPower || !req.query.flairAssign
+            || !req.query.flairCreate || !req.query.flairAccept) {
+                // checks for all required params
+                res()
+            } else {
+                await MinFlair(req.query.username, req.query.password, req.query.circleName)
+                .then(async minFlair => {
+                    if (minFlair.success) { // managed to find the user's flair creation abilities
+                        if (req.query.flairPower >= minFlair.power) {
+                            if (req.query.flairCreate <= minFlair.allowCreateFlairs && 
+                                req.query.flairAssign <= minFlair.allowAssignFlairs && 
+                                req.query.flairAccept <= minFlair.allowAcceptMembers) {
+                                    // flair intending to create is under valid permissions
+                                    await GetCircle(req.query.username, req.query.password, req.query.circleName)
+                                    .then(async circleRes => {
+                                        if (circleRes.success) { // found target circle
+                                            let flairExists = false // checks if target flair already exists
+                                            for (let testflair of circleRes.circle.flairs) {
+                                                console.log(testflair.name, req.query.flairName)
+                                                if (testflair.name == req.query.flairName) {
+                                                    flairExists = true
+                                                    break
+                                                }
+                                            }
+                                            if (!flairExists) {
+                                                circleRes.circle.flairs.push({
+                                                    name: req.query.flairName,
+                                                    id: circleRes.circle.flairs.length,
+                                                    active: 1,
+                                                    power: req.query.flairPower,
+                                                    allowAssignFlairs: req.query.flairAssign,
+                                                    allowCreateFlairs: req.query.flairCreate,
+                                                    allowAcceptMembers: req.query.flairAccept
+                                                }) // updates the current circle and updates the server with it
+                                                setCircleRes = await SetCircle(req.query.circleName, circleRes.circle)
+                                                if (setCircleRes.success) {
+                                                    res_value.success = 1
+                                                    // res()
+                                                }
+                                            }
+                                        }
+                                    })
+                                }
+                        }
+                    }
+                })
+                res()
+            }
+    })
+    .then(result => {
+        res.json(res_value)
+    })
 })
 
 app.listen(port, () => {
