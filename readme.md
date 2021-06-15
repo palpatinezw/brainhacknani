@@ -256,7 +256,7 @@ Returns:
 
 <br>
 
-**`/accept_member_info` (untested) **
+**`/accept_member_info` (untested)**
 
 *Function: view the users that have sent a request to join the private server. Checks if user has privileges to accept new members.*
 
@@ -305,7 +305,7 @@ Returns:
 
 <br>
 
-**`/kick` (untested) **
+**`/kick` (untested)**
 
 *Function: kicks user from a circle. Additional use: ban a user regardless of whether he is currently in the server.*
 
