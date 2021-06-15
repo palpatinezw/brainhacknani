@@ -15,9 +15,17 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 
 
+function HomeScreen({ navigation }) {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <Button onPress={() => navigation.navigate("register")} title="register" />
+      <Button onPress={() => navigation.navigate("login")} title="login" />
+    </View>
+         );
+ }
 
 
-function login1(){
+ function login(){
 
 
   const [password, setPassword] = useState();
@@ -34,14 +42,7 @@ function login1(){
 
   
   }
-        
-      //end here
-
-        
-
-
-
- //add password here 
+  
   
   return (
     <View>
@@ -64,7 +65,7 @@ function login1(){
       />
         <TouchableOpacity onPress = {() => handleAddPassword()}>
           <View style = {styles.addWrapper}>
-            <Text style = {styles.addText}>Add Password</Text>
+            <Text style = {styles.addText}>Login</Text>
           </View>
         </TouchableOpacity>
       
@@ -73,13 +74,78 @@ function login1(){
   )
 }
 
+function register(){
+
+
+  const [password, setPassword] = useState();
+  const [username, setAccount] = useState(); 
+
+  function handleAddPassword(){
+
+    // Keyboard.dismiss();
+    // const userCredential = [username, password];
+    // fetch("https:/flyyee-brainhackserver.herokuapp.com/create?username=${username}&password=${password}")
+    // .then(response => response.json())
+    // .then(data => console.log(data.success))
+
+  }
+
+  
+  return (
+    <View>
+      <KeyboardAvoidingView
+      behavior = {Platform.OS === 'ios' ? 'padding': 'height'} 
+      style = {styles.createAccountWrapper}
+      >
+        <TextInput style = {styles.input} placeholder = {'Enter your username'} value = {null} 
+        onChangeText ={(text) => setAccount(text)} 
+        />
+      
+      </KeyboardAvoidingView>
+
+      <KeyboardAvoidingView
+      behavior = {Platform.OS === 'ios' ? 'padding': 'height'} 
+      style = {styles.createAccountWrapper}
+      >
+        <TextInput style = {styles.input} placeholder = {'Confirm your username'} value = {null} 
+        onChangeText ={(text) => setAccount(text)} 
+        />
+      
+      </KeyboardAvoidingView>
+      
+      <KeyboardAvoidingView
+       behavior = {Platform.OS === 'ios' ? 'padding': 'height'} 
+       style = {styles.createAccountWrapper}
+       >
+      <TextInput style = {styles.input} placeholder = {'Enter your password'} value = {null} 
+      onChangeText ={(text) => setPassword(text)} 
+      />
+       
+       <Text>Password should be longer than 10 letters and should contain special characters</Text>
+      
+      </KeyboardAvoidingView>
+      <TouchableOpacity onPress = {() => handleAddPassword()}>
+          <View style = {styles.addWrapper}>
+            <Text style = {styles.addText}> Create Account </Text>
+          </View>
+        </TouchableOpacity>
+    </View>
+  )
+}
+
+
+
+ //add password here 
+
 const Stack = createStackNavigator()
 
 export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name = 'login1' component = {login1}/>
+      <Stack.Screen name = 'homescreen' component = {HomeScreen}/>
+      <Stack.Screen name = 'login' component = {login}/>
+        <Stack.Screen name = 'register' component = {register}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
