@@ -1,4 +1,6 @@
-# API endpoints:
+# Dcoumentation for server
+
+## API endpoints:
 
 **`/create`**
 
@@ -67,8 +69,8 @@ returns: where power is an integer >= 0
 
 <br>
 
-## example implementation with fetch:
+### example implementation with fetch:
 
-### host: https://flyyee-brainhackserver.herokuapp.com/
+*host: https://flyyee-brainhackserver.herokuapp.com/*
 
 `fetch('https://flyyee-brainhackserver.herokuapp.com/create?username=bob&password=harambe');`
