@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
+import { AsyncStorage } from 'react-native';
 
 
 function HomeScreen({ navigation }) {
@@ -31,17 +32,29 @@ function HomeScreen({ navigation }) {
   const [password, setPassword] = useState();
   const [username, setAccount] = useState(); 
 
-  function handleAddPassword(){
+  function handlelogin(){
 
     Keyboard.dismiss();
     const userCredential = [username, password];
     fetch("https:/flyyee-brainhackserver.herokuapp.com/create?username=${username}&password=${password}")
     .then(response => response.json())
-    .then(data => console.log(data.success))
+    .then(data => {
+      if (data.success === 1)
+      {
+        console.log('login successful');
+      }
+
+
+
+    })
+
+    
 
 
   
   }
+
+
   
   
   return (
@@ -63,7 +76,7 @@ function HomeScreen({ navigation }) {
       <TextInput style = {styles.input} placeholder = {'Enter your password'} value = {null} 
       onChangeText ={(text) => setPassword(text)} 
       />
-        <TouchableOpacity onPress = {() => handleAddPassword()}>
+        <TouchableOpacity onPress = {() => handlelogin()}>
           <View style = {styles.addWrapper}>
             <Text style = {styles.addText}>Login</Text>
           </View>
@@ -80,7 +93,7 @@ function register(){
   const [password, setPassword] = useState();
   const [username, setAccount] = useState(); 
 
-  function handleAddPassword(){
+  function handleregister(){
 
     // Keyboard.dismiss();
     // const userCredential = [username, password];
