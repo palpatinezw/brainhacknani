@@ -11,7 +11,7 @@ password: password in plaintext form
 *returns:* JSON Object with success key set to 0/1 for failure/success, eg.
 `{ success: 1, info: "created user" }`
 
-
+\
 
 **`/login`**
 
@@ -23,7 +23,7 @@ password: password in plaintext form
 
 *returns:* JSON Object with success key set to 0/1 for failure/success
 
-
+\
 
 **`/create_circle`**
 
@@ -41,9 +41,10 @@ circleVis: visibility of the circle (currently unused)
 
 *returns:* JSON Object with success key set to 0/1 for failure/success
 
-
+\
 
 **`/create_flair_info`**
+
 *access method: GET with query params*
 
 username: username
@@ -64,7 +65,7 @@ returns: where power is an integer >= 0
 
 `{ success: 0 }` for all failures (unauth, no flairs, no flairs allowed to be assigned etc)
 
-
+\
 
 
 ## example implementation with fetch:
