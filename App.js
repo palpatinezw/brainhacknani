@@ -7,7 +7,7 @@ import Home from './components/Home'
 import Login from './components/Login'
 import Register from './components/Register'
 
-import ProtectedHome from './components/ProtectedHome'
+import Protected from './components/Protected'
 
 const Stack = createStackNavigator()
 
@@ -23,7 +23,7 @@ export default function App() {
         <Stack.Screen name='login' component = {Login} options={{ title: 'Login' }}/>
         <Stack.Screen name='register' component = {Register} options={{ title: 'Register' }}/>
 
-        <Stack.Screen name='ProtectedHome' component = {ProtectedHome} options={{ title: 'Sigma' }} headerLeft={()=> null}/>
+        <Stack.Screen name='ProtectedHome' component = {Protected} options={{ title: 'Sigma' }} headerLeft={()=> null}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
