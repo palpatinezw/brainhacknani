@@ -5,7 +5,8 @@ var bodyParser = require('body-parser')
 var crypto = require('crypto'); 
 
 const app = express()
-app.use(bodyParser.urlencoded())
+// app.use(bodyParser.urlencoded())
+// app.use(express.json())
 
 let port = process.env.PORT;
 if (port == null || port == "") {
@@ -198,7 +199,9 @@ app.get('/create_circle', async (req, res) => {
     
 })
 
-async function GetCircle(username, password, circleName) {
+async function GetCircle(username, password, circleName) { 
+    // includes user auth and checks if user is in circle
+    // circle found is passed under .circle
     return new Promise(async (res, err) => {
         let res_value = {
             success: 0
@@ -222,8 +225,10 @@ async function GetCircle(username, password, circleName) {
                     const query = { name: circleName };
                     const circle = await circles.findOne(query);
                     if (circle) {
-                        res_value.success = 1
-                        res_value.circle = circle
+                        if (username in circle.members) {
+                            res_value.success = 1
+                            res_value.circle = circle
+                        }   
                     }
                 }             
             } finally {
@@ -398,6 +403,149 @@ app.get('/create_flair', async (req, res) => {
                         }
                     }
                 })
+                res()
+            }
+    })
+    .then(result => {
+        res.json(res_value)
+    })
+})
+
+app.get('/get_members', async (req, res) => {
+    let res_value = {
+        success: 0
+    }
+    return new Promise(async (res, err) => {
+        if (!req.query.username || !req.query.password || !req.query.circleName) {
+                // checks for all required params
+                res()
+            } else {
+                await GetCircle(req.query.username, req.query.password, req.query.circleName)
+                .then(async circleRes => {
+                    if (circleRes.success) { // user auth AND found target circle
+                        let circle = circleRes.circle
+                        res_value.success = 1
+                        for (let member in circle.members) {
+                            let memberFlairList = []
+                            for (let flair of circle.members[member]) {
+                                let targetFlair = circle.flairs[parseInt(flair)]
+                                if (targetFlair.active == 1) {
+                                    memberFlairList.push(targetFlair.name)
+                                }
+                            }
+                            circle.members[member] = memberFlairList
+                        }
+                        res_value.members = circle.members
+                    }
+                })
+                res()
+            }
+    })
+    .then(result => {
+        res.json(res_value)
+    })
+})
+
+app.get('/assign_flair_info', async (req, res) => {
+    let res_value = {
+        success: 0
+    }
+    return new Promise(async (res, err) => {
+        if (!req.query.username || !req.query.password || !req.query.circleName) {
+                // checks for all required params
+                res()
+            } else {
+                await MinFlair(req.query.username, req.query.password, req.query.circleName)
+                .then(async minFlair => {
+                    if (minFlair.success) { // managed to find the user's flair creation abilities
+                        // flair intending to create is under valid permissions
+                        await GetCircle(req.query.username, req.query.password, req.query.circleName)
+                        .then(async circleRes => {
+                            if (circleRes.success) { // found target circle
+                                let availableFlairs = []
+                                for (let testflair of circleRes.circle.flairs) {
+                                    if (testflair.power >= minFlair.power) {
+                                        availableFlairs.push(testflair)
+                                    }
+                                }
+                                res_value.success = 1
+                                res_value.availableFlairs = availableFlairs
+                            }
+                        })
+                    }
+                })
+                res()
+            }
+    })
+    .then(result => {
+        res.json(res_value)
+    })
+})
+
+app.get('/assign_flair', async (req, res) => {
+    let res_value = {
+        success: 0
+    }
+    return new Promise(async (res, err) => {
+        if (!req.query.username || !req.query.password || !req.query.circleName
+            || !req.query.flairNames || !req.query.targetUsernames) {
+                // checks for all required params
+                res()
+            } else {
+                let targetUsers = req.query.targetUsers.split(",")
+                let flairNames = req.query.flairNames.split("0")
+                for (let x = 0; x < flairNames.length; x++) {
+                    flairNames[x] = flairNames[x].split(",")
+                }
+                if (targetUsers.length == 1) {
+                    targetUsers = Array(flairNames.length).fill(targetUsers[0])
+                }
+                if (targetUsers.length == flairNames.length) {
+                    await MinFlair(req.query.username, req.query.password, req.query.circleName)
+                    .then(async minFlair => {
+                        if (minFlair.success) { // managed to find the user's flair creation abilities
+                            // flair intending to create is under valid permissions
+                            await GetCircle(req.query.username, req.query.password, req.query.circleName)
+                            .then(async circleRes => {
+                                if (circleRes.success) { // found target circle
+                                    let circle = circleRes.circle
+                                    let availableFlairs = []
+                                    for (let testflair of circle.flairs) {
+                                        if (testflair.power >= minFlair.power) {
+                                            availableFlairs.push(testflair)
+                                        }
+                                    }
+                                    targetUsernames.forEach((targetUser, idx) => {
+                                        let intendedFlairs = flairNames[idx]
+                                        for (let intendedFlair of intendedFlairs) {
+                                            let intendedFlair_id = -1
+                                            if (targetUser in circle.members) {
+                                                flairIsAvailable = false
+                                                for (let testflair of availableFlairs) {
+                                                    if (testflair.name == intendedFlair) {
+                                                        intendedFlair_id = testflair.id
+                                                        flairIsAvailable = true
+                                                        break
+                                                    }
+                                                }
+                                                if (flairIsAvailable) {
+                                                    res_value.success = 1
+                                                    res_value.availableFlairs = availableFlairs
+                                                    if (intendedFlair_id in circle.members[targetUser]) {
+                                                        // target user already has the flair so remove it
+                                                        circle.members[targetUser].splice(circle.members[targetUser].indexOf(intendedFlair_id), 1)
+                                                    } else {
+                                                        circle.members[targetUser].push(intendedFlair_id)
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    })
+                                }
+                            })
+                        }
+                    })
+                }
                 res()
             }
     })
