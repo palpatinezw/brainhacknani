@@ -112,7 +112,8 @@ async function Auth(username, password) {
                 // await mongoClient.connect();
                 const database = mongoClient.db('sigma');
                 const users = database.collection('users');
-                const query = { username: username };
+                let queryRegex = new RegExp("^" + username + "$", "i")
+                const query = { username: queryRegex };
                 const userExists = await users.findOne(query);
                 if (userExists) {
                     const hash = crypto.pbkdf2Sync(password, userExists.salt,  

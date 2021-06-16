@@ -1,9 +1,12 @@
 functionality that can be definitely be showcased given the backend setup below:
+login
+create account
 search
 call
 flairs
 create flairs
 choose/assign flairs
+kick
 leave
 pending users
 Other functionality could be showcased (just that im too stoned to think of it)
