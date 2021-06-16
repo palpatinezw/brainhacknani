@@ -75,7 +75,7 @@ export default function CircleInfoScreen( {route, navigation} ) {
 		.then(response => response.json())
 		.then(data => {
 			if (data.success == 1) {
-				navigation.navigate("Protected Home Main");
+				navigation.navigate("Protected Home Main", {username, password});
 			} else console.log("leave Error")
 		})
     }
