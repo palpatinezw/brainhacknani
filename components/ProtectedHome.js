@@ -65,24 +65,22 @@ const ProtectedHomeMain = ({ route, navigation }) => {
 			...circles,
 		])
 	}
-
 	function showFilter(circleName) {
 		setFilterModal(circles.find(o => o.name === circleName))
 		setFilterModalVisible(true)
 	}
-
 	function renderCircles( {item} ) {
 		return (
-			<View style={tailwind('h-12 rounded-lg px-2 flex-row border-2')}>
-				<TouchableOpacity style={tailwind('w-7/12 text-xl self-center')} onPress={() => navigation.navigate("Circle Info", {name:item.name})}>
+			<View style={tailwind('h-14 rounded-lg px-2 flex-row border-2')}>
+				<TouchableOpacity style={tailwind('w-8/12 text-xl self-center')} onPress={() => navigation.navigate("Circle Info", {name:item.name})}>
 					<Text style={tailwind('text-xl')}>{item.name}</Text>
 				</TouchableOpacity>
 				<TouchableOpacity style={tailwind('w-3/12 justify-center')} onPress={() => showFilter(item.name)}>
-					<Text>FILTER {filter ? '('+filter[item.name].length+')' : ''}</Text>
+					<Text style={tailwind('justify-end')}>FILTER {filter ? '('+filter[item.name].length+')' : ''}</Text>
 				</TouchableOpacity>
-				<TouchableOpacity style={tailwind('w-2/12 justify-center')} onPress={() => makeSelection(item.name)}>
-					<View style={tailwind('h-8 w-8 border-2 rounded-full self-end justify-center')}>
-						<Text style={tailwind('w-4/6 text-xl self-center')}>{selected.includes(item.name) ?'✔':''}</Text>
+				<TouchableOpacity style={tailwind('w-1/12 justify-center')} onPress={() => makeSelection(item.name)}>
+					<View style={tailwind(`h-7 w-7 border-2 rounded-full self-end justify-center ${selected.includes(item.name) ? 'bg-blue-600':''}`)}>
+
 					</View>
 				</TouchableOpacity>
 			</View>
@@ -109,13 +107,10 @@ const ProtectedHomeMain = ({ route, navigation }) => {
 	}
 	function renderFilter({item}) {
 		return (
-			<View style={tailwind('h-12 rounded-lg px-2 flex-row border-2')}>
+			<View style={tailwind('h-14 rounded-lg px-2 flex-row border-2')}>
 				<Text style={tailwind('w-5/6 text-xl self-center')}>{item}</Text>
 				<TouchableOpacity style={tailwind('w-1/6 justify-center')} onPress={() => toggleFilter(filterModal.name, item)}>
-					<View style={tailwind('h-8 w-8 border-2 rounded-full self-end justify-center')}>
-						<Text style={tailwind('w-4/6 text-xl self-center')}>
-							{filter[filterModal.name]?.find(o => o === item) ? '✔':''}
-						</Text>
+					<View style={tailwind(`h-7 w-7 border-2 rounded-full self-end justify-center ${filter[filterModal.name]?.find(o => o === item) ? 'bg-blue-600':''}`)}>
 					</View>
 				</TouchableOpacity>
 			</View>
@@ -151,14 +146,14 @@ const ProtectedHomeMain = ({ route, navigation }) => {
 						<Text style={tailwind('text-3xl')}>{filterModal ? filterModal.name : ''}</Text>
 						{filterModal ? <FlatList data={ filterModal.flairs } extraData={ refreshModal } renderItem={renderFilter} ItemSeparatorComponent={separator} keyExtractor={(item, index) => index.toString()}/> : <Text>Error</Text>}
 						<View style={tailwind('flex-row')}>
-							<TouchableOpacity style={tailwind('h-12 w-1/3 rounded-lg px-2 flex-row border-2')} onPress={filterAll}>
-								<Text style={tailwind('w-5/6 text-xl self-center')}>ALL</Text>
+							<TouchableOpacity style={tailwind('h-12 w-1/3 justify-center rounded-lg px-2 flex-row border-2')} onPress={filterAll}>
+								<Text style={tailwind('text-xl self-center text-center')}>ALL</Text>
 							</TouchableOpacity>
-							<TouchableOpacity style={tailwind('h-12 w-1/3 rounded-lg px-2 flex-row border-2')} onPress={() => setFilterModalVisible(!filterModalVisible)}>
-								<Text style={tailwind('w-full text-xl self-center')}>CLOSE</Text>
+							<TouchableOpacity style={tailwind('h-12 w-1/3 mx-1 rounded-lg px-2 flex-row border-2')} onPress={() => setFilterModalVisible(!filterModalVisible)}>
+								<Text style={tailwind('w-full text-xl self-center text-center')}>CLOSE</Text>
 							</TouchableOpacity>
 							<TouchableOpacity style={tailwind('h-12 w-1/3 rounded-lg px-2 flex-row border-2')} onPress={filterNone}>
-								<Text style={tailwind('w-5/6 text-xl self-center')}>NONE</Text>
+								<Text style={tailwind('text-xl self-center text-center')}>NONE</Text>
 							</TouchableOpacity>
 						</View>
 						
