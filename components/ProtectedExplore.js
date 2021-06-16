@@ -32,12 +32,21 @@ const ProtectedExplore = ({ route, navigation }) => {
     //           size={30}
     //           color="black"
     //           style={{
+<<<<<<< HEAD
     //           color: "#f55",
     //              marginRight: 10,
     //            }}
     //          />
     //        </TouchableOpacity>
     //  ),
+=======
+    //             color: "#f55",
+    //             marginRight: 10,
+    //           }}
+    //         />
+    //       </TouchableOpacity>
+    //     ),
+>>>>>>> d7251bc209d83e91c831524bfc186680efdaa4e7
 
 
 
@@ -53,9 +62,13 @@ const ProtectedExplore = ({ route, navigation }) => {
    .then(response => response.json())
     .then(data => {
         console.log(search);
+<<<<<<< HEAD
         
         console.log (data);
         
+=======
+
+>>>>>>> d7251bc209d83e91c831524bfc186680efdaa4e7
         if (data.success === 1) {
          
 
@@ -109,6 +122,12 @@ function separator() {
 
 
         }
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> d7251bc209d83e91c831524bfc186680efdaa4e7
 
 
 
