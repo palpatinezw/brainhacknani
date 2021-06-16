@@ -7,6 +7,9 @@ import tailwind from 'tailwind-rn';
 import styles from '../styles/styles'
 import { AntDesign } from '@expo/vector-icons';
 
+import ProtectedCreateCommunity from './ProtectedCreateCommunity';
+import ProtectedJoinCommunity from './ProtectedJoinCommunity';
+
 
 
 const ProtectedExplore = ({ route, navigation }) => {
@@ -153,25 +156,6 @@ function separator() {
        {ShowSearch ? <FlatList data={results} renderItem={renderCircles} ItemSeparatorComponent={separator} keyExtractor={(item, index) => index.toString()}/> : <Text></Text>}
         </View>
             );
-      }
-
-
-    function ProtectedJoinCommunity( ) {
-        return (
-          <View>
-          <Text>  </Text>
-
-          </View>
-        )
-      }
-
-      function ProtectedCreateCommunity( ) {
-        return (
-          <View>
-          <Text>  </Text>
-
-          </View>
-        )
       }
 
 
