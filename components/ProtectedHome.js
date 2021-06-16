@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, TouchableOpacity, FlatList, Modal } from "react-native"
+import { View, Text, TouchableOpacity, FlatList, Modal, ScrollView } from "react-native"
 import tailwind from 'tailwind-rn'
 import { createStackNavigator } from "@react-navigation/stack"
 import Spinner from 'react-native-loading-spinner-overlay'
@@ -173,14 +173,18 @@ const ProtectedHomeMain = ({ route, navigation }) => {
             <Spinner visible={loading} textContent='Loading...' textStyle={tailwind('text-white text-sm')}/>
 			<View style={tailwind('h-full')}>
                 <Text style={tailwind('text-3xl font-bold')}>Home</Text>
-                <TouchableOpacity style={tailwind('w-4/5 self-center mt-8 py-2 rounded-lg bg-blue-500')} onPress={() => navigation.navigate("Call", {username, password})}>
-					<Text style={tailwind('text-2xl self-center font-bold text-white')}>Call ({selected.length})</Text>
-				</TouchableOpacity>
-				<View style={tailwind('mt-8 mb-4')}>
+                <View style={tailwind('mt-4 px-4 py-2 bg-blue-700 rounded-lg')}>
+                    <Text style={tailwind('text-2xl font-bold text-white')}>Call a Stranger</Text>
+                    <Text style={tailwind('text-white mt-1')}>Select the communities you want to call by clicking the circle.</Text>
+                    <TouchableOpacity style={tailwind('w-4/5 self-center py-1 my-4 rounded-lg bg-white')} onPress={() => navigation.navigate("Call", {username, password})}>
+    					<Text style={tailwind('text-xl self-center text-blue-600')}>Start Call ({selected.length})</Text>
+    				</TouchableOpacity>
+                </View>
+				<View style={tailwind('flex-1 mt-4')}>
 					{ (!loading) && (
                         <>
-                            <Text style={tailwind('text-xl font-bold')}>My Communities</Text>
-                            <Text style={tailwind('text-xs mt-2  mb-4')}>Check the communities you would like to call.</Text>
+                            <Text style={tailwind('text-xl font-bold mb-2')}>My Communities</Text>
+
                             <FlatList
                                 data={circles} renderItem={renderCircles}
                                 ItemSeparatorComponent={separator}
