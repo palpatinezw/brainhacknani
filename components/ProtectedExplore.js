@@ -5,7 +5,6 @@ import { createStackNavigator } from "@react-navigation/stack"
 import { NavigationContainer } from '@react-navigation/native';
 import tailwind from 'tailwind-rn';
 import styles from '../styles/styles'
-import Protected from './Protected';
 import { Ionicons } from "@expo/vector-icons";
 
 
@@ -15,10 +14,10 @@ const ProtectedExplore = ({ route, navigation }) => {
     const [search, setSearch]=useState();
     const [textvalue, settextvalue]=useState("Reccomended");
     const [reccommended,setreccommended]=useState(
-        <TouchableOpacity onPress={ () => navigation.navigate("Description", 
-        { }) 
+        <TouchableOpacity onPress={ () => navigation.navigate("Description",
+        { })
         }>
-    
+
         <Text>Video Games</Text>
           </TouchableOpacity>
 
@@ -39,8 +38,8 @@ const ProtectedExplore = ({ route, navigation }) => {
     //       </TouchableOpacity>
     //     ),
 
-    
-      
+
+
     //   });
     // });
 
@@ -49,7 +48,7 @@ const ProtectedExplore = ({ route, navigation }) => {
     .then(response => response.json())
     .then(data => {
         console.log(search);
-        
+
         if (data.success === 1) {
             navigation.dispatch(CommonActions.reset({
                 index: 0,
@@ -71,21 +70,21 @@ const ProtectedExplore = ({ route, navigation }) => {
         <Button onPress={search2()} title="enter" />
         </View>
             );
-        
-    
+
+
         function search1(){
-    
+
             settextvalue("Search Results")
             setreccommended("")
             console.log(setSearch);
             }
-            
-    
-      
+
+
+
         }
- 
-    
-      
+
+
+
 
 
     function Description( ) {
@@ -97,12 +96,12 @@ const ProtectedExplore = ({ route, navigation }) => {
         )
       }
 
-  
+
 
 const Stack = createStackNavigator()
 
 export default function ProtectedExploreStack({route}){
-  let {username, password} = route.params 
+  let {username, password} = route.params
   return (
     <Stack.Navigator>
     <Stack.Screen name="Explore" component={ProtectedExplore} initialParams={{username, password}} />
@@ -113,7 +112,7 @@ export default function ProtectedExploreStack({route}){
 
 // export default function ProtectedExploreStack({route}){
 //     return (
-  
+
 //         <Stack.Navigator>
 //           <Stack.Screen name="Explore" component={ProtectedExplore} initialParams={{username, password}} />
 //           <Stack.Screen name="Description" component={Description} initialParams={{username, password}} />
