@@ -260,7 +260,7 @@ Returns:
 
 <br>
 
-**`/accept_member_info` (untested)**
+**`/accept_member_info`**
 
 *Function: view the users that have sent a request to join the private server. Checks if user has privileges to accept new members.*
 
@@ -283,7 +283,7 @@ Returns:
 
 <br>
 
-**`/accept_member` (untested)** 
+**`/accept_member`** 
 
 *Function: accept one user that has sent a request to join the private server. Checks if user has privileges to accept new members.*
 
@@ -309,7 +309,7 @@ Returns:
 
 <br>
 
-**`/kick` (untested)**
+**`/kick`**
 
 *Function: kicks user from a circle. Additional use: ban a user regardless of whether he is currently in the server.*
 
@@ -335,7 +335,7 @@ Returns:
 
 <br>
 
-**`/get_circle_data` (untested)**
+**`/get_circle_data`**
 
 *Function: retrieves information about a circle regardless of if user is in the circle.*
 
@@ -365,7 +365,7 @@ The circle key is only defined if success is 1.
 
 <br>
 
-**`/search_circles` (untested)**
+**`/search_circles`**
 
 *Function: retrieves information about a circle regardless of if user is in the circle.*
 
@@ -390,7 +390,7 @@ The search results are ordered such that results that match the searchstring ("w
 
 <br>
 
-**`/my_circles` (untested)**
+**`/my_circles`**
 
 *Function: retrieves all circles that a user currently belongs to.*
 
