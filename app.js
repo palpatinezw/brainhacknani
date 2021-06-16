@@ -182,7 +182,7 @@ app.get('/create_circle', async (req, res) => {
                                 allowAcceptMembers: 1
                             },
                             {
-                                name: "default",
+                                name: "Member",
                                 id: 1,
                                 active: 1,
                                 power: 10,
@@ -505,10 +505,27 @@ app.get('/assign_flair_info', async (req, res) => {
         success: 0
     }
     return new Promise(async (res, err) => {
-        if (!req.query.username || !req.query.password || !req.query.circleName) {
+        if (!req.query.username || !req.query.password || !req.query.circleName || !req.query.newuser) {
                 // checks for all required params
                 res()
             } else {
+                if (req.query.newuser) {
+                    await GetCircle(req.query.username, req.query.password, req.query.circleName, true)
+                        .then(async circleRes => {
+                            if (circleRes.success) { // found target circle
+                                let availableFlairs = []
+                                for (let testflair of circleRes.circle.flairs) {
+                                    if (testflair.power > circleRes.circle.flairs[1].power) { // corresponds to default power
+                                        availableFlairs.push(testflair)
+                                    }
+                                }
+                                res_value.success = 1
+                                res_value.availableFlairs = availableFlairs
+                            }
+                        })
+                } else {
+
+                }
                 await MinFlair(req.query.username, req.query.password, req.query.circleName)
                 .then(async minFlair => {
                     if (minFlair.success) { // managed to find the user's flair creation abilities
@@ -902,6 +919,59 @@ app.get('/search_circles', async (req, res) => {
                             })
                             results = Array.from(results)
                             res_value.success = 1
+                            res_value.results = results
+                        }
+                    })
+                res()
+            }
+    })
+    .then(result => {
+        res.json(res_value)
+    })
+})
+
+app.get('/my_circles', async (req, res) => {
+    let res_value = {
+        success: 0
+    }
+    return new Promise(async (res, err) => {
+        if (!req.query.username || !req.query.password) {
+                // checks for all required params
+                res()
+            } else {
+                await Auth(req.query.username, req.query.password)
+                    .then(auth => {
+                        if (auth.success) {
+                            let username = req.query.username
+                            let password = req.query.password
+                            let results = Set()
+                            await FindCircles(username, password, {})
+                            .then(found => {
+                                if (found.success) {
+                                    let allCircles = found.circles
+                                    for (let circle of allCircles) {
+                                        if (circle.members[username]) {
+                                            let circleFlairs = []
+                                            for (let flair of circle.flairs) {
+                                                if (flair.active) {
+                                                    circleFlairs.push(flair.name)
+                                                }
+                                            }
+                                            results.add({
+                                                name: circle.name,
+                                                flairs: circleFlairs
+                                            })
+                                        }
+                                    }
+                                }
+                            })
+                            results = Array.from(results)
+                            res_value.success = 1
+                            results.sort(function(a, b) {
+                                let textA = a.name.toUpperCase();
+                                let textB = b.name.toUpperCase();
+                                return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+                            });
                             res_value.results = results
                         }
                     })

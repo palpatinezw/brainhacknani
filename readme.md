@@ -112,6 +112,8 @@ password: password in plaintext form
 
 circleName: name of the circle
 
+newuser: 0/1. If the user has not yet joined a circle but wishes to look at available flairs for new members, newuser should be set to 1.
+
 Returns:
 
 ```
@@ -385,6 +387,35 @@ Returns:
 ```
 
 The search results are ordered such that results that match the searchstring ("wood") completely are first. They are followed by circles that start with the searchstring ("wood"-"working"). Circles that contain the searchstring anywhere in the name are last.
+
+<br>
+
+**`/my_circles` (untested)**
+
+*Function: retrieves all circles that a user currently belongs to.*
+
+*access method: GET with query params*
+
+username: username
+
+password: password in plaintext form
+
+Returns:
+
+```
+{
+	success: 0/1,
+	results: [{
+		name: "Apple some circle",
+		flairs: ["Owner", "Member", "Janitor"]
+	}, {
+		name: "Boy some other circle",
+		flairs: ["Owner", "Member", "Coolguy"]
+	}]
+}
+```
+
+The results are ordered in alphabetical order.
 
 <br>
 
