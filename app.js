@@ -139,7 +139,7 @@ app.get('/create_circle', async (req, res) => {
     }
     await new Promise(async (res, err) => {
         if (!req.query.username || !req.query.password || !req.query.circleName
-            || !req.query.circleVis) {
+            || !req.query.circleVis || !req.query.circleInfo) {
             res()
         } else {
             try {
@@ -159,6 +159,12 @@ app.get('/create_circle', async (req, res) => {
                     const circleExists = await circles.findOne(query);
 
                     if (!circleExists) {
+                        let infoText
+                        if (req.query.circleInfo) {
+                            infoText = req.query.circleInfo
+                        } else {
+                            infoText = "Hey! I just created my own circle."
+                        }
                         const circle = {name: req.query.circleName, vis: req.query.circleVis, members: {
                             [req.query.username] : [0]
                                 // username: ,
@@ -184,7 +190,7 @@ app.get('/create_circle', async (req, res) => {
                                 allowCreateFlairs: 0,
                                 allowAcceptMembers: 0
                             }
-                        ], infoText: "Hey! I just created my own circle." }
+                        ], infoText: infoText }
                         const result = await circles.insertOne(circle);
                         if (result.insertedCount == 1) {
                             res_value.success = 1
@@ -207,6 +213,42 @@ app.get('/create_circle', async (req, res) => {
     })
     
 })
+
+async function FindCircles(username, password, searchString) { 
+    // includes user auth and checks if user is in circle
+    // circle found is passed under .circle
+    return new Promise(async (res, err) => {
+        let res_value = {
+            success: 0
+        }
+        if (!username || !password || !searchString) {
+            res(res_value)
+        } else {
+            try {
+                mongoClient = new MongoClient(_connstring, {
+                    useNewUrlParser: true,
+                    useUnifiedTopology: true,
+                })
+
+                await mongoClient.connect();
+                const database = mongoClient.db('sigma');
+                let userLegit = await Auth(username, password)
+                userLegit = userLegit.success
+
+                if (userLegit) {
+                    const circles = database.collection('circles');
+                    const query = { name: searchString };
+                    const circle = await circles.find(query);
+                    res_value.success = 1
+                    res_value.circles = circle
+                }             
+            } finally {
+                await mongoClient.close();
+                res(res_value)
+            }
+        }
+    })
+}
 
 async function GetCircle(username, password, circleName, dontbelong = false) { 
     // includes user auth and checks if user is in circle
@@ -787,6 +829,89 @@ app.get('/kick', async (req, res) => {
     })
 })
 
+app.get('/get_circle_data', async (req, res) => {
+    let res_value = {
+        success: 0
+    }
+    return new Promise(async (res, err) => {
+        if (!req.query.username || !req.query.password || !req.query.circleName) {
+                // checks for all required params
+                res()
+            } else {
+                await GetCircle(req.query.username, req.query.password, req.query.circleName)
+                .then(async circleRes => {
+                    if (circleRes.success) { // user auth AND found target circle
+                        let circle = circleRes.circle
+                        res_value.success = 1
+                        delete circle.members
+                        delete circle.pendingUsers
+                        delete circle.bannedUsers
+                        for (let x = 0; x < circle.flairs.length; x++) {
+                            circle.flairs[x] = circle.flairs[x].name
+                        }
+                        res_value.circle = circle
+                    }
+                })
+                res()
+            }
+    })
+    .then(result => {
+        res.json(res_value)
+    })
+})
+
+app.get('/search_circles', async (req, res) => {
+    let res_value = {
+        success: 0
+    }
+    return new Promise(async (res, err) => {
+        if (!req.query.username || !req.query.password || !req.query.searchstring) {
+                // checks for all required params
+                res()
+            } else {
+                await Auth(req.query.username, req.query.password)
+                    .then(auth => {
+                        if (auth.success) {
+                            let username = req.query.username
+                            let password = req.query.password
+                            let searchstring = req.query.searchstring
+                            let results = Set()
+                            await FindCircles(username, password, "/^" + searchstring + "$/")
+                            .then(same => {
+                                if (same.success) {
+                                    for (let circle of same.circles) {
+                                        results.add(circle.name)
+                                    }
+                                    await FindCircles(username, password, "/^" + searchstring + "/")
+                                    .then(start => {
+                                        if (start.success) {
+                                            for (let circle of start.circles) {
+                                                results.add(circle.name)
+                                            }
+                                            await FindCircles(username, password, "/" + searchstring + "/")
+                                            .then(semi => {
+                                                if (semi.success) {
+                                                    for (let circle of semi.circles) {
+                                                        results.add(circle.name)
+                                                    }
+                                                }
+                                            })
+                                        }
+                                    })
+                                }
+                            })
+                            results = Array.from(results)
+                            res_value.success = 1
+                            res_value.results = results
+                        }
+                    })
+                res()
+            }
+    })
+    .then(result => {
+        res.json(res_value)
+    })
+})
 
 app.listen(port, () => {
 	console.log(`Example app listening at http://localhost:${port}`)

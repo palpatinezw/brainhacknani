@@ -47,6 +47,8 @@ circleName: name of the circle
 
 circleVis: visibility of the circle ("private" for circles that require moderators to accept user's requests to join)
 
+circleInfo: string containing a brief description about the circle
+
 *returns:* JSON Object with success key set to 0/1 for failure/success
 
 <br>
@@ -328,6 +330,61 @@ Returns:
 	success: 0/1
 }
 ```
+
+<br>
+
+**`/get_circle_data` (untested)**
+
+*Function: retrieves information about a circle regardless of if user is in the circle.*
+
+*access method: GET with query params*
+
+username: username
+
+password: password in plaintext form
+
+circleName: name of the circle
+
+Returns: 
+
+```
+{
+	success: 0/1,
+	circle: {
+		name: "sample circle",
+		vis: "public/private",
+		flairs: ["Owner", "therapist"],
+		infoText: "This is a cool circle that I created"
+	}
+}
+```
+
+The circle key is only defined if success is 1.
+
+<br>
+
+**`/search_circles` (untested)**
+
+*Function: retrieves information about a circle regardless of if user is in the circle.*
+
+*access method: GET with query params*
+
+username: username
+
+password: password in plaintext form
+
+searchstring: string to search for in the names of all circles
+
+Returns:
+
+```
+{
+	success: 0/1,
+	results: ["wood", "woodworking", "chuckers of wood"]
+}
+```
+
+The search results are ordered such that results that match the searchstring ("wood") completely are first. They are followed by circles that start with the searchstring ("wood"-"working"). Circles that contain the searchstring anywhere in the name are last.
 
 <br>
 
