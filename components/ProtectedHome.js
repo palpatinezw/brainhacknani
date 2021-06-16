@@ -17,6 +17,7 @@ const ProtectedHomeMain = ({ route, navigation }) => {
 	const [ refreshModal, setRefreshModal ] = useState(false);
 	const [ donotInit,  setdonotInit ] = useState(false)
 
+	//setting filters state - default all picked
 	function initFilter() {
 		if (!circles) {
 			loadCircles()
@@ -30,6 +31,7 @@ const ProtectedHomeMain = ({ route, navigation }) => {
 		setFilter(tempFilter)
 		setdonotInit(true)
 	}
+	//loading circles from server
 	function loadCircles() {
 		setloading(true)
 		// console.log(`http://flyyee-brainhackserver.herokuapp.com/my_circles?username=${username}&password=${password}`)
@@ -48,10 +50,12 @@ const ProtectedHomeMain = ({ route, navigation }) => {
 	useEffect(() => {
 		loadCircles()
 	}, [])
+	//changing filter when circles are updated
 	useEffect(() => {
 		initFilter()
 	}, [circles])
 	
+	//changing selection of circles to call
 	function makeSelection(circleName) {
 		const tempSel = selected
 		const curCircle = tempSel.indexOf(circleName)
@@ -65,10 +69,12 @@ const ProtectedHomeMain = ({ route, navigation }) => {
 			...circles,
 		])
 	}
+	//showing the page to edit filters for flairs
 	function showFilter(circleName) {
 		setFilterModal(circles.find(o => o.name === circleName))
 		setFilterModalVisible(true)
 	}
+	//flatlist render for circles
 	function renderCircles( {item} ) {
 		return (
 			<View style={tailwind('h-14 rounded-lg px-2 flex-row border-2')}>
@@ -89,6 +95,7 @@ const ProtectedHomeMain = ({ route, navigation }) => {
 	function separator() {
         return (<View style={{height:5}}></View>)
     }
+	//toggling filters
 	function toggleFilter(circleName, flair) {
 		if (!filter[circleName]) return
 		console.log(circles)
@@ -105,6 +112,7 @@ const ProtectedHomeMain = ({ route, navigation }) => {
 		console.log(filter)
 		setRefreshModal(!refreshModal)
 	}
+	//flatlist render for flairs
 	function renderFilter({item}) {
 		return (
 			<View style={tailwind('h-14 rounded-lg px-2 flex-row border-2')}>
@@ -116,6 +124,7 @@ const ProtectedHomeMain = ({ route, navigation }) => {
 			</View>
 		)
 	}
+	//all and none flair functions
 	function filterNone() {
 		let circleName = filterModal.name
 		var tempfilter = filter
@@ -184,8 +193,8 @@ export default function ProtectedHome({route}) {
 	const { username, password } = route.params
 
 	return (
-		<Stack.Navigator headerMode="none">
-			<Stack.Screen name="Protected Home Main" component={ProtectedHomeMain} initialParams={{username, password}}/>
+		<Stack.Navigator>
+			<Stack.Screen name="Protected Home Main" options={{headerShown: false}} component={ProtectedHomeMain} initialParams={{username, password}}/>
 			<Stack.Screen name="Circle Info" component={CircleInfoScreen} initialParams={{username, password}}/>
 			<Stack.Screen name="Call" component={Call} initialParams={{username, password}} />
 		</Stack.Navigator>
