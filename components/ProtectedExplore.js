@@ -90,13 +90,13 @@ const ProtectedExplore = ({ route, navigation }) => {
   function renderCircles( {item} ) {
     return (
       <View style={tailwind('h-15 rounded-lg px-2 flex-row border-2')}>
-      {ShowSearch ? <TouchableOpacity onPress={ () => navigation.navigate("Join",
+      <TouchableOpacity onPress={ () => navigation.navigate("Join",
         {  username: username,
            password: password,
           circleName: item})
         }>
            <Text>{item}</Text>
-           </TouchableOpacity> :<Text></Text>}
+           </TouchableOpacity> 
         </View>
     )
 }
@@ -148,14 +148,9 @@ function separator() {
       } >
         <Text>Video Games</Text>
   </TouchableOpacity>  : <Text></Text>}
-          
-      
-
-   
-         
-
+  
         
-       {ShowSearch ? <FlatList data={results} renderItem={renderCircles} ItemSeparatorComponent={separator} keyExtractor={(item, index) => index.toString()}/> : }
+       {ShowSearch ? <FlatList data={results} renderItem={renderCircles} ItemSeparatorComponent={separator} keyExtractor={(item, index) => index.toString()}/> : <Text></Text>}
         </View>
             );
       }
