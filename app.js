@@ -14,6 +14,11 @@ if (port == null || port == "") {
 }
 
 let mongoClient // global mongo client variable
+mongoClient = new MongoClient(_connstring, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+})
+mongoClient.connect()
 
 app.get('/', (req, res) => {
 	res.send('Hello World!')
@@ -22,12 +27,13 @@ app.get('/', (req, res) => {
 app.get('/create', async (req, res) => {
     if (req.query.username && req.query.password) {
         await new Promise(async (res, err) => {
+            //let mongoClient
             try {
-                mongoClient = new MongoClient(_connstring, {
-                    useNewUrlParser: true,
-                    useUnifiedTopology: true,
-                })
-                await mongoClient.connect();
+                // mongoClient = new MongoClient(_connstring, {
+                //     useNewUrlParser: true,
+                //     useUnifiedTopology: true,
+                // })
+                // await mongoClient.connect();
                 const database = mongoClient.db('sigma');
                 const users = database.collection('users');
 
@@ -43,7 +49,7 @@ app.get('/create', async (req, res) => {
                     res(result)
                 }              
             } finally {
-                await mongoClient.close();
+                //await mongoClient.close();
             }
         })
         .then(result => {
@@ -87,12 +93,13 @@ async function Auth(username, password) {
             }
             res(res_value)
         } else {
+            //let mongoClient
             try {
-                mongoClient = new MongoClient(_connstring, {
-                    useNewUrlParser: true,
-                    useUnifiedTopology: true,
-                })
-                await mongoClient.connect();
+                // mongoClient = new MongoClient(_connstring, {
+                //     useNewUrlParser: true,
+                //     useUnifiedTopology: true,
+                // })
+                // await mongoClient.connect();
                 const database = mongoClient.db('sigma');
                 const users = database.collection('users');
                 const query = { username: username };
@@ -115,7 +122,7 @@ async function Auth(username, password) {
                     }
                 }
             } finally {
-                await mongoClient.close();
+                //await mongoClient.close();
                 res(res_value)
             }
         }
@@ -142,13 +149,13 @@ app.get('/create_circle', async (req, res) => {
             || !req.query.circleVis || !req.query.circleInfo) {
             res()
         } else {
+            //let mongoClient
             try {
-                mongoClient = new MongoClient(_connstring, {
-                    useNewUrlParser: true,
-                    useUnifiedTopology: true,
-                })
-
-                await mongoClient.connect();
+                // mongoClient = new MongoClient(_connstring, {
+                //     useNewUrlParser: true,
+                //     useUnifiedTopology: true,
+                // })
+                // await mongoClient.connect();
                 const database = mongoClient.db('sigma');
                 let userLegit = await Auth(req.query.username, req.query.password)
                 userLegit = userLegit.success
@@ -198,7 +205,7 @@ app.get('/create_circle', async (req, res) => {
                     }
                 }             
             } finally {
-                await mongoClient.close();
+                //await mongoClient.close();
                 res()
             }
         }
@@ -224,13 +231,13 @@ async function FindCircles(username, password, searchString) {
         if (!username || !password || !searchString) {
             res(res_value)
         } else {
+            //let mongoClient
             try {
-                mongoClient = new MongoClient(_connstring, {
-                    useNewUrlParser: true,
-                    useUnifiedTopology: true,
-                })
-
-                await mongoClient.connect();
+                // mongoClient = new MongoClient(_connstring, {
+                //     useNewUrlParser: true,
+                //     useUnifiedTopology: true,
+                // })
+                // await mongoClient.connect();
                 const database = mongoClient.db('sigma');
                 let userLegit = await Auth(username, password)
                 userLegit = userLegit.success
@@ -247,9 +254,12 @@ async function FindCircles(username, password, searchString) {
                     const cursor = await circles.find(query);
                     res_value.success = 1
                     res_value.cursor = cursor
-                }             
+                    
+                }
+                // console.log("here")
+                //await mongoClient.close();    
             } finally {
-                await mongoClient.close();
+                // //await mongoClient.close();
                 res(res_value)
             }
         }
@@ -266,13 +276,13 @@ async function GetCircle(username, password, circleName, dontbelong = false) {
         if (!username || !password || !circleName) {
             res(res_value)
         } else {
+            //let mongoClient
             try {
-                mongoClient = new MongoClient(_connstring, {
-                    useNewUrlParser: true,
-                    useUnifiedTopology: true,
-                })
-
-                await mongoClient.connect();
+                // mongoClient = new MongoClient(_connstring, {
+                //     useNewUrlParser: true,
+                //     useUnifiedTopology: true,
+                // })
+                // await mongoClient.connect();
                 const database = mongoClient.db('sigma');
                 let userLegit = await Auth(username, password)
                 userLegit = userLegit.success
@@ -292,7 +302,7 @@ async function GetCircle(username, password, circleName, dontbelong = false) {
                     }
                 }             
             } finally {
-                await mongoClient.close();
+                //await mongoClient.close();
                 res(res_value)
             }
         }
@@ -307,13 +317,13 @@ async function SetCircle(circleName, newcircleData) {
         if (!circleName || !newcircleData) {
             res(res_value)
         } else {
+            //let mongoClient
             try {
-                mongoClient = new MongoClient(_connstring, {
-                    useNewUrlParser: true,
-                    useUnifiedTopology: true,
-                })
-
-                await mongoClient.connect();
+                // mongoClient = new MongoClient(_connstring, {
+                //     useNewUrlParser: true,
+                //     useUnifiedTopology: true,
+                // })
+                // await mongoClient.connect();
                 const database = mongoClient.db('sigma');
 
                 const circles = database.collection('circles');
@@ -329,7 +339,7 @@ async function SetCircle(circleName, newcircleData) {
                     }
                 }
             } finally {
-                await mongoClient.close();
+                //await mongoClient.close();
                 res(res_value)
             }
         }
@@ -344,13 +354,13 @@ async function MinFlair(username, password, circleName, assignBypass = false) {
         if (!username || !password || !circleName) {
             res(res_value)
         } else {
+            //let mongoClient
             try {
-                mongoClient = new MongoClient(_connstring, {
-                    useNewUrlParser: true,
-                    useUnifiedTopology: true,
-                })
-
-                await mongoClient.connect();
+                // mongoClient = new MongoClient(_connstring, {
+                //     useNewUrlParser: true,
+                //     useUnifiedTopology: true,
+                // })
+                // await mongoClient.connect();
                 const database = mongoClient.db('sigma');
                 let userLegit = await Auth(username, password)
                 userLegit = userLegit.success
@@ -366,16 +376,19 @@ async function MinFlair(username, password, circleName, assignBypass = false) {
                             let minFlairPower = -1
                             let minFlair
                             for (let flairId of userflairs) {
-                                // console.log(flairId)
                                 let flair = circle.flairs[flairId]
-                                // console.log(circle.flairs[1])
                                 if (flair.allowCreateFlairs || assignBypass) {
+                                    console.log("here", flair.power)
                                     if (minFlairPower == -1) {
                                         minFlairPower = flair.power
                                         minFlair = flair
                                     } else {
-                                        minFlairPower = Math.min(flair.power, minFlairPower)
-                                        minFlair = flair
+                                        console.log(minFlairPower)
+                                        if (flair.power < minFlairPower) {
+                                            minFlair = flair
+                                            minFlairPower = flair.power
+                                        }
+                                        
                                     }
                                 }
                             }
@@ -393,7 +406,7 @@ async function MinFlair(username, password, circleName, assignBypass = false) {
                     }
                 }             
             } finally {
-                await mongoClient.close();
+                //await mongoClient.close();
                 res(res_value)
             }
         }
@@ -541,7 +554,6 @@ app.get('/assign_flair_info', async (req, res) => {
                             .then(async circleRes => {
                                 if (circleRes.success) { // found target circle
                                     let availableFlairs = []
-                                    // console.log(circleRes.circle.flairs[1].power, "here")
                                     if (minFlair.power == circleRes.circle.flairs[1].power) {
                                         minFlair.power += 1
                                     }

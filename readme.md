@@ -427,9 +427,9 @@ How "power" works for the flairs is that 0 is the person with most abilities, an
 
 ### Example implementation with fetch:
 
-*host: https://flyyee-brainhackserver.herokuapp.com/*
+*host: http://flyyee-brainhackserver.herokuapp.com/*
 
-`fetch('https://flyyee-brainhackserver.herokuapp.com/create?username=${username}&password=${password}')
+`fetch('http://flyyee-brainhackserver.herokuapp.com/create?username=${username}&password=${password}')
 .then(response => response.json())
 .then(data => if (data.success == 1) { console.log("good") } );`
 
