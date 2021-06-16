@@ -122,7 +122,10 @@ function separator() {
         <View style={tailwind('px-4 py-4')}>
           <View style={{flexDirection:'row'}}>
             <TextInput style={styles.input} placeholder={'Search'} value = {null}
-        onChangeText ={(text) => setSearch(text)}/>
+        onChangeText ={(text) => {
+            setSearch(text)
+            search2()
+        }}/>
        
        <TouchableOpacity onPress={search2}
           ><AntDesign name="search1" size={24} color="black"style={{
