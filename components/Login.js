@@ -59,7 +59,7 @@ const Login = ({ navigation }) => {
           >
               <Text style={tailwind('text-center text-blue-500')}>Register</Text>
           </Pressable>
-          <Spinner visible={isLoading} textContent='Loading' textStyle={tailwind('text-white text-sm')}/>
+          <Spinner visible={isLoading} textContent='Loading...' textStyle={tailwind('text-white text-sm')}/>
       </View>
 
     </View>

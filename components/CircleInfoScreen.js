@@ -85,7 +85,7 @@ export default function CircleInfoScreen( {route, navigation} ) {
         if (flair=="Owner") {
             Alert.alert("Cannot unassign", "You remove yourself as the owner")
             setassignFlair(false)
-            return 
+            return
         }
         console.log('http://flyyee-brainhackserver.herokuapp.com/assign_flair?username='+username+'&password='+password+'&circleName='+name+'&flairNames='+flair+'&targetUsernames='+username)
         fetch('http://flyyee-brainhackserver.herokuapp.com/assign_flair?username='+username+'&password='+password+'&circleName='+name+'&flairNames='+flair+'&targetUsernames='+username)
@@ -109,58 +109,29 @@ export default function CircleInfoScreen( {route, navigation} ) {
     function renderFlair({item}) {
         return (
             <TouchableOpacity onPress={() => toggleFlair(item.name)}>
-                <View style={tailwind(`h-14 rounded-lg px-2 flex-row border-2 ${curFlairs.includes(item.name) ? 'bg-blue-500' : ''}`)}>
-                    <Text style={tailwind(`w-5/6 text-xl self-center`)}>{item.name}</Text>
-                </View>
+                <View style={tailwind(`mt-2 py-1 px-2 rounded-lg border-2 border-blue-500 ${curFlairs.includes(item.name) ? 'bg-blue-500' : 'bg-white'}`)}>
+    				<Text style={tailwind(`w-5/6 ml-2 ${curFlairs.includes(item.name) ? 'text-white' : 'text-blue-500'}`)}>{item.name}</Text>
+    			</View>
             </TouchableOpacity>
-            
         )
     }
 
-    return (  
+    return (
 		<View style={tailwind('px-4 py-4')}>
-            <Modal
-				animationType="slide"
-				transparent={true}
-				visible={ModalVisible}
-				onRequestClose={() => {
-					setModalVisible(!ModalVisible);
-				}}
-			>
-				<View style={tailwind('px-4 py-4 h-full w-full justify-center')}>
-					<View style={tailwind('px-4 py-4 h-5/6 w-full bg-blue-100 self-center border-2 rounded-lg')}>
-						<Text style={tailwind('text-3xl')}>Flairs</Text>
-						{(loadingFlairs||loadingCur) 
-                            ? <Text>Loading flairs...</Text>
-                            : <FlatList data={allFlairs} extraData={curFlairs} renderItem={renderFlair}/>
-                        }
-					</View>
-				</View>
-      		</Modal>
-            <View style={tailwind('flex-row')}>
-                <Text style={tailwind('text-3xl w-11/12')}>{name}</Text>
-                <View style={tailwind('justify-start')}>
-                    {isMod
-                        ? <TouchableOpacity>
-                            <Image style={tailwind('w-9 h-7')} source={require('./icons/edit.png')} /> 
-                        </TouchableOpacity>
-                        : <View></View>}
-                </View>
+            <View style={tailwind('flex flex-row items-center')}>
+                <Text style={tailwind('text-3xl')}>{name}</Text>
+                <Text style={tailwind('text-xs ml-4 py-1 px-2 bg-gray-500 text-white rounded')}>{info.vis === 'private' ? 'Private' : 'Public'}</Text>
             </View>
-            <View style={tailwind('my-4 px-4 py-4 h-5/6 bg-blue-100 rounded-3xl')}>
-                <Text>{loading?"loading...":info.infoText}</Text>
-                <Text>{info.vis}</Text>
-            </View>
-            <View style={tailwind('flex-row')}>
-                <TouchableOpacity style={tailwind('h-12 w-1/2 rounded-lg px-2 flex-row border-2')} onPress={leaveCircle}>
-                    <Text style={tailwind('text-xl self-center text-center')}>LEAVE</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={tailwind('h-12 w-1/2 rounded-lg px-2 flex-row border-2')} onPress={() => setModalVisible(!ModalVisible)}>
-                    <Text style={tailwind('text-xl self-center text-center')}>EDIT FLAIR</Text>
-                </TouchableOpacity>
-            </View>
+
+            <Text style={tailwind('text-xl font-bold mt-8')}>Description</Text>
+            <Text style={tailwind('mt-2 text-lg')}>{(!loading) && info.infoText}</Text>
+
+            <Text style={tailwind('text-xl font-bold mt-4 mb-2')}>My Flairs</Text>
+            <FlatList data={allFlairs} extraData={curFlairs} renderItem={renderFlair} keyExtractor={(item, index) => index.toString()}/>
+
+            <Spinner visible={loading} textContent='Loading...' textStyle={tailwind('text-white text-sm')}/>
             <Spinner visible={assignFlair} textContent='Changing your flair' textStyle={tailwind('text-white text-sm')}/>
-			
+
 		</View>
 	);
 }
