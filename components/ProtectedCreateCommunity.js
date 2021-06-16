@@ -8,134 +8,61 @@ import {
   Keyboard,
   Button,
   Pressable,
-  FlatList
+  FlatList,
+  Switch
 } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { NavigationContainer } from '@react-navigation/native'
-import tailwind from 'tailwind-rn'
+import tailwind, { create } from 'tailwind-rn'
 import styles from '../styles/styles'
 import Protected from './Protected'
-import { Ionicons } from '@expo/vector-icons'
 import { circle } from 'react-native/Libraries/Animated/src/Easing'
+import Spinner from 'react-native-loading-spinner-overlay';
 
-export default function ProtectedJoinCommunity ({ route, navigation }) {
-  let { username, password, circleName } = route.params
-  circleName = 'qui' // TODO: REMOVE
-  const [loadingData, setloadingData] = useState(true)
-  const [refresh, setRefresh] = useState(false)
+export default function ProtectedCreateCommunity ({ route, navigation }) {
+	let { username, password } = route.params
+	const [ name, setName ] = useState('Name of Community')
+	const [ prv, setprv ] = useState(false)
+	const [ info, setInfo ] = useState('Add some info here!')
+	const [ loading, setloading ] = useState(false)
 
-  function getCircleInfo (username, password, circleName) {
-    // return new Promise((res, err) => {
-    fetch(
-      `http://flyyee-brainhackserver.herokuapp.com/get_circle_data?username=${username}&password=${password}&circleName=${circleName}`
-    )
-      .then(fetched => fetched.json())
-      .then(ret => {
-        if (ret.success == 1) {
-          setcircleInfo(ret.circle.infoText)
-        }
-        setloadingData(false)
-        res()
-      })
-    // .catch(caught => err(caught))
-    // })
-  }
+	function create() {
+		var prvstring = prv?'private':'public';
+		setloading(true)
+		fetch('http://flyyee-brainhackserver.herokuapp.com/create_circle?username='+username+'&password='+password+'&circleName='+name+'&circleVis='+prvstring+'&circleInfo='+info)
+		.then(response => response.json())
+		.then(data => {
+			if (data.success == 1) {
+				console.log(data)
+				setloading(false)
+				navigation.goBack()
+			} else {
+				console.log("create Error")
+				setloading(false)
+			}
+		})
+	}
 
-  function getFlairs () {
-    console.log('here')
-    // return new Promise((res, err) => {
-    fetch(
-      `http://flyyee-brainhackserver.herokuapp.com/assign_flair_info?username=${username}&password=${password}&circleName=${circleName}&newuser=1`
-    )
-      .then(fetched => fetched.json())
-      .then(ret => {
-        console.log(ret.success)
-        if (ret.success == 1) {
-          let flairs = ret.availableFlairs
-          console.log(flairs)
-          for (let x = 0; x < flairs.length; x++) {
-            flairs[x] = flairs[x].name
-          }
-          setflairInfo(flairs)
-          let fs = {}
-          for (let flair of flairs) {
-            fs[flair] = false
-          }
-          setflairStatus(fs)
-          setloadingFlairData(false)
-        }
-        res()
-      })
-    // .catch(caught => err(caught))
-    // })
-  }
-
-  useEffect(() => {
-    getCircleInfo(username, password, circleName)
-    getFlairs()
-  }, [])
-
-  function renderCircles ({ item }) {
-    return (
-      <View style={tailwind('h-15 rounded-lg px-2 flex-row border-2')}>
-        <TouchableOpacity
-          onPress={() => {
-            let fs = flairStatus
-            fs[item] = !fs[item]
-            setflairStatus(fs)
-            console.log(flairStatus[item])
-            setRefresh(!refresh)
-          }}
-          style={tailwind(flairStatus[item] ? 'bg-blue-600' : 'bg-blue-100')}
-        >
-          <Text>{item}</Text>
-        </TouchableOpacity>
-      </View>
-    )
-  }
-  function separator () {
-    return <View style={{ height: 5 }}></View>
-  }
-
-  async function join() {
-    await fetch(
-        `http://flyyee-brainhackserver.herokuapp.com/join_circle?username=${username}&password=${password}&circleName=${circleName}`
-    ).then(
-        res => res.json()
-    ).then(res => {
-        if (res.success) {
-            if (res.info == "joined") {
-                let flairs = []
-                for (let flair in flairStatus) {
-                    if (flairStatus[flair]) {
-                        flairs.push(flair)
-                    }
-                }
-                flairs = flairs.toString()
-                await fetch(`http://flyyee-brainhackserver.herokuapp.com/assign_flair?username=${username}&password=${password}&circleName=${circleName}&flairnames=${flairs}&targetUsernames=${username}`)
-                .then(assignRes => assignRes.json())
-                .then(assignRes => {
-                    // TODO: go to home
-
-                })
-            }
-        }
-    })
-  }
-
-  return (
-    <View style={tailwind('px-4 py-4')}>
-      <Text>{circleName}</Text>
-      <Text>Info: {loadingData ? 'still loading data, nerd' : circleInfo}</Text>
-      <Text>Choose a role: </Text>
-      <FlatList
-        extraData={refresh}
-        data={loadingFlairData ? ['still loading flair data, nerd'] : flairInfo}
-        renderItem={renderCircles}
-        ItemSeparatorComponent={separator}
-        keyExtractor={(item, index) => index.toString()}
-      />
-      <Button onPress={join} title='Join' />
-    </View>
-  )
+	return (
+		<View style={tailwind('px-4 py-4')}>
+			<TextInput style={tailwind('h-1/6 w-11/12 bg-blue-100 rounded-lg text-2xl px-2')} value={name} onChangeText={(newText) => setName(newText)} />
+			<View style={tailwind('flex-row h-1/6 w-full justify-center')}>
+				<View tailwind={tailwind('w-5/6 self-center')}><Text style={tailwind('text-xl')}>Private</Text></View>
+				<View tailwind={tailwind('w-1/6 self-center')}>
+					<Switch
+						trackColor={{ false: "#767577", true: "#81b0ff" }}
+						thumbColor={prv ? "#1d4ed8" : "#f4f3f4"}
+						ios_backgroundColor="#3e3e3e"
+						onValueChange={() => setprv(!prv)}
+						value={prv}
+					/>
+				</View>
+			</View>
+			<TextInput style={tailwind('h-3/6 w-11/12 bg-blue-100 rounded-lg px-2')} value={info} onChangeText={(newText) => setInfo(newText)} />
+			<TouchableOpacity onPress={create}>
+				<Text style={tailwind('text-xl')}>Create</Text>
+			</TouchableOpacity>
+			<Spinner visible={loading} textContent='Creating' textStyle={tailwind('text-white text-sm')}/>
+		</View>
+	)
 }

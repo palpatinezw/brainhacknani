@@ -15,7 +15,6 @@ import { NavigationContainer } from '@react-navigation/native'
 import tailwind from 'tailwind-rn'
 import styles from '../styles/styles'
 import Protected from './Protected'
-import { Ionicons } from '@expo/vector-icons'
 import { circle } from 'react-native/Libraries/Animated/src/Easing'
 
 export default function ProtectedJoinCommunity ({ route, navigation }) {

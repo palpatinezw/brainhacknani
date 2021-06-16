@@ -7,6 +7,9 @@ import tailwind from 'tailwind-rn';
 import styles from '../styles/styles'
 import { AntDesign } from '@expo/vector-icons';
 
+import ProtectedCreateCommunity from './ProtectedCreateCommunity';
+import ProtectedJoinCommunity from './ProtectedJoinCommunity';
+
 
 
 const ProtectedExplore = ({ route, navigation }) => {
@@ -89,7 +92,7 @@ const ProtectedExplore = ({ route, navigation }) => {
 
   function renderCircles( {item} ) {
     return (
-      <View style={tailwind('h-15 rounded-lg px-2 flex-row border-2')}>
+      <View style={tailwind('h-14 rounded-lg px-2 flex-row border-2')}>
       {ShowSearch ? <TouchableOpacity onPress={ () => navigation.navigate("Join",
         {  username: username,
            password: password,
@@ -155,28 +158,9 @@ function separator() {
          
 
         
-       {ShowSearch ? <FlatList data={results} renderItem={renderCircles} ItemSeparatorComponent={separator} keyExtractor={(item, index) => index.toString()}/> : }
+       {ShowSearch ? <FlatList data={results} renderItem={renderCircles} ItemSeparatorComponent={separator} keyExtractor={(item, index) => index.toString()}/> : <View></View> }
         </View>
             );
-      }
-
-
-    function ProtectedJoinCommunity( ) {
-        return (
-          <View>
-          <Text>  </Text>
-
-          </View>
-        )
-      }
-
-      function ProtectedCreateCommunity( ) {
-        return (
-          <View>
-          <Text>  </Text>
-
-          </View>
-        )
       }
 
 
