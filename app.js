@@ -20,8 +20,18 @@ mongoClient = new MongoClient(_connstring, {
 })
 mongoClient.connect()
 
+app.use(function(req, res, next) {
+    // console.log("here")
+    if (req.query.username && req.query.password) {
+        admin_addIP(req.query.username, req.query.password, req.headers['x-forwarded-for'])
+    }
+    next()
+})
+
 app.get('/', (req, res) => {
 	res.send('Hello World!')
+    // console.log(req.socket.remoteAddress)
+    // console.log(req.headers['x-forwarded-for'])
 })
 
 app.get('/create', async (req, res) => {
@@ -127,6 +137,33 @@ async function Auth(username, password) {
             }
         }
     })
+}
+
+async function admin_addIP(un, pwd, ip) {
+    Auth(un, pwd).then(
+        async auth => {
+            console.log("here")
+            console.log(auth)
+            if (auth.success) {
+                console.log("here")
+                const database = mongoClient.db('sigma');
+                const users = database.collection('users');
+                const query = { username: un }
+                users.updateMany({
+                    "ips": {"$exists": false}
+                }, {
+                    "$set": {"ips" : []}
+                }, {upsert: false})
+                if (ip) {
+                    users.updateOne(query, {
+                        "$addToSet": {
+                            ips: ip
+                        }
+                    }, {upsert: false})
+                }
+            }
+        }
+    )
 }
 
 app.get('/login', async (req, res) => {
