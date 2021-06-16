@@ -46,7 +46,7 @@ export default function ProtectedCreateCommunity ({ route, navigation }) {
     			}
     	})
     } else {
-        setLoading(false)
+        setloading(false)
     }
 
 }
