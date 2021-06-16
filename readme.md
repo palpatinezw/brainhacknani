@@ -1,6 +1,16 @@
-# Documentation for server
+# Backend Documentation
 
-## API endpoints:
+I love creating backends from scratch. aw yeah
+
+- Users
+- Flairs
+- Admissions
+- Circle Data
+- Example implementation
+
+# API endpoints:
+
+## Users
 
 **`/create`**
 
@@ -52,6 +62,39 @@ circleInfo: string containing a brief description about the circle
 *returns:* JSON Object with success key set to 0/1 for failure/success
 
 <br>
+
+**`/my_circles`**
+
+*Function: retrieves all circles that a user currently belongs to.*
+
+*access method: GET with query params*
+
+username: username
+
+password: password in plaintext form
+
+Returns:
+
+```
+{
+	success: 0/1,
+	results: [{
+		name: "Apple some circle",
+		flairs: ["Owner", "Member", "Janitor"]
+	}, {
+		name: "Boy some other circle",
+		flairs: ["Owner", "Member", "Coolguy"]
+	}]
+}
+```
+
+The results are ordered in alphabetical order.
+
+<br>
+
+<br>
+
+## Flairs
 
 **`/create_flair_info`**
 
@@ -161,32 +204,9 @@ targetUsernames: stringified list of usernames corresponding to the 2D flair lis
 
 Returns: JSON Object with success key set to 0/1 for failure/success. 1 only indicates that *at least one* flair was successfully applied to one user. However, most of the times you don't have to worry about this and you can just take it to indicate complete success.
 
-<br>
+<br><br>
 
-**`/get_members`**
-
-*Function: lists the members in a circle. User has to be a member of the circle.*
-
-*access method: GET with query params*
-
-username: username
-
-password: password in plaintext form
-
-circleName: name of the circle
-
-Returns: (the value of members is another object, with member usernames as keys, and members' flairs as values)
-
-```
-{
-	success: 0/1,
-	members: {
-		bob: ["Owner"]
-	}
-}
-```
-
-<br>
+## Admissions
 
 **`/join_circle`**
 
@@ -335,6 +355,35 @@ Returns:
 
 <br>
 
+<br>
+
+## Circle Data
+
+**`/get_members`**
+
+*Function: lists the members in a circle. User has to be a member of the circle.*
+
+*access method: GET with query params*
+
+username: username
+
+password: password in plaintext form
+
+circleName: name of the circle
+
+Returns: (the value of members is another object, with member usernames as keys, and members' flairs as values)
+
+```
+{
+	success: 0/1,
+	members: {
+		bob: ["Owner"]
+	}
+}
+```
+
+<br>
+
 **`/get_circle_data`**
 
 *Function: retrieves information about a circle regardless of if user is in the circle.*
@@ -388,48 +437,23 @@ Returns:
 
 The search results are ordered such that results that match the searchstring ("wood") completely are first. They are followed by circles that start with the searchstring ("wood"-"working"). Circles that contain the searchstring anywhere in the name are last.
 
-<br>
+<br><br>
 
-**`/my_circles`**
-
-*Function: retrieves all circles that a user currently belongs to.*
-
-*access method: GET with query params*
-
-username: username
-
-password: password in plaintext form
-
-Returns:
-
-```
-{
-	success: 0/1,
-	results: [{
-		name: "Apple some circle",
-		flairs: ["Owner", "Member", "Janitor"]
-	}, {
-		name: "Boy some other circle",
-		flairs: ["Owner", "Member", "Coolguy"]
-	}]
-}
-```
-
-The results are ordered in alphabetical order.
-
-<br>
-
-### Explanation of power:
+# Explanation of power:
 
 How "power" works for the flairs is that 0 is the person with most abilities, and you can only un/assign other members flairs that correspond to a higher power than yours (I know this idea of lower power being better is kinda unintuitive). Comparison of the absolute value or magnitude of the power will use "larger/smaller", eg. 5 is larger than 3. Comparison of the meaning of the power will use "stronger/weaker", eg. 3 is stronger than 5.
 
-<br>
+<br><br>
 
-### Example implementation with fetch:
+# Example implementation with fetch:
 
 *host: http://flyyee-brainhackserver.herokuapp.com/*
 
-`fetch('http://flyyee-brainhackserver.herokuapp.com/create?username=${username}&password=${password}')
+```
+fetch('http://flyyee-brainhackserver.herokuapp.com/create?username=${username}&password=${password}')
 .then(response => response.json())
-.then(data => if (data.success == 1) { console.log("good") } );`
+.then(data => if (data.success == 1) { console.log("good") } )
+```
+
+
 
