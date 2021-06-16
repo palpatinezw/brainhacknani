@@ -42,3 +42,16 @@ http://localhost:10991/create_circle?username=jon&password=hsa&circleName=google
 http://localhost:10991/create_circle?username=jon&password=hsa&circleName=goldfish%20lovers&circleVis=public&circleInfo=sup
 http://localhost:10991/create_circle?username=jon&password=hsa&circleName=a-go-go&circleVis=public&circleInfo=sup
 http://localhost:10991/create_circle?username=jon&password=hsa&circleName=ergonomists&circleVis=public&circleInfo=sup
+http://localhost:10991/create_circle?username=jon&password=hsa&circleName=nature%20lovers&circleVis=public&circleInfo=sup
+http://localhost:10991/create_circle?username=jon&password=hsa&circleName=fight%20club&circleVis=public&circleInfo=sup
+http://localhost:10991/create_flair?username=jon&password=hsa&circleName=govdenier%20HQ&flairName=Master&flairPower=11&flairCreate=1&flairAccept=0
+http://localhost:10991/create_flair?username=jon&password=hsa&circleName=govdenier%20HQ&flairName=Top%20Gun&flairPower=11&flairCreate=1&flairAccept=0
+http://localhost:10991/create_flair?username=jon&password=hsa&circleName=govdenier%20HQ&flairName=Loyal%20HQer&flairPower=11&flairCreate=1&flairAccept=0
+http://localhost:10991/create_flair?username=jon&password=hsa&circleName=nature%20lovers&flairName=Flower&flairPower=11&flairCreate=1&flairAccept=0
+http://localhost:10991/create_flair?username=jon&password=hsa&circleName=nature%20lovers&flairName=Tree&flairPower=11&flairCreate=1&flairAccept=0
+http://localhost:10991/create_flair?username=jon&password=hsa&circleName=nature%20lovers&flairName=Root&flairPower=11&flairCreate=1&flairAccept=0
+http://localhost:10991/create_flair?username=jon&password=hsa&circleName=nature%20lovers&flairName=Nut&flairPower=11&flairCreate=1&flairAccept=0
+http://localhost:10991/create_flair?username=jon&password=hsa&circleName=fight%20club&flairName=Boxer&flairPower=11&flairCreate=1&flairAccept=0
+http://localhost:10991/create_flair?username=jon&password=hsa&circleName=fight%20club&flairName=Coach&flairPower=11&flairCreate=1&flairAccept=0
+http://localhost:10991/create_flair?username=jon&password=hsa&circleName=fight%20club&flairName=MMA&flairPower=11&flairCreate=1&flairAccept=0
+http://localhost:10991/create_flair?username=jon&password=hsa&circleName=fight%20club&flairName=Judo&flairPower=11&flairCreate=1&flairAccept=0

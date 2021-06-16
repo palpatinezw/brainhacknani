@@ -921,7 +921,7 @@ app.get('/get_circle_data', async (req, res) => {
                 // checks for all required params
                 res()
             } else {
-                await GetCircle(req.query.username, req.query.password, req.query.circleName)
+                await GetCircle(req.query.username, req.query.password, req.query.circleName, true)
                 .then(async circleRes => {
                     if (circleRes.success) { // user auth AND found target circle
                         let circle = circleRes.circle
@@ -959,21 +959,21 @@ app.get('/search_circles', async (req, res) => {
                             let password = req.query.password
                             let searchstring = req.query.searchstring
                             let results = new Set()
-                            let sameRegex = new RegExp("^" + searchstring + "$")
+                            let sameRegex = new RegExp("^" + searchstring + "$", "i")
                             await FindCircles(username, password, sameRegex)
                             .then(async same => {
                                 if (same.success) {
                                     await same.cursor.forEach(circle => {
                                         results.add(circle.name)
                                     })
-                                    let startRegex = new RegExp("^" + searchstring)
+                                    let startRegex = new RegExp("^" + searchstring, "i")
                                     await FindCircles(username, password, startRegex)
                                     .then(async start => {
                                         if (start.success) {
                                             await start.cursor.forEach(circle => {
                                                 results.add(circle.name)
                                             })
-                                            let semiRegex = new RegExp(searchstring)
+                                            let semiRegex = new RegExp(searchstring, "i")
                                             await FindCircles(username, password, semiRegex)
                                             .then(async semi => {
                                                 if (semi.success) {
