@@ -22,6 +22,9 @@ const styles = StyleSheet.create({
   },
   addWrapper:{
     justifyContent: 'center'
+  },
+  profilePic:{
+    paddingLeft:15,
   }
 });
 
