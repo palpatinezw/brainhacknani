@@ -1,3 +1,4 @@
+import { NavigationRouteContext } from '@react-navigation/native';
 import React, { Component } from 'react';
 import {
   Platform,
@@ -12,8 +13,8 @@ import RtcEngine, {
   VideoRenderMode,
 } from 'react-native-agora';
 
-import requestCameraAndAudioPermission from './components/Permission';
-import styles from './components/Style';
+import requestCameraAndAudioPermission from './Permission';
+import styles from './Style';
 
 interface Props {}
 
@@ -38,8 +39,8 @@ export default class Call extends Component<Props, State> {
     super(props);
     this.state = {
       appId: '9ca19421c87d4b29aa91915f91a13e6d',
-      token: '0069ca19421c87d4b29aa91915f91a13e6dIAByBjcVDfe3Hb/QnLdHklOeVeZckLtRHBXwROv70OkUbf5NKkkAAAAAEAAUVcyA7InJYAEAAQDqiclg',
-      channelName: 'ch1',
+      token: '0069ca19421c87d4b29aa91915f91a13e6dIAB/rC26g8AntCVc8r17/Hee+yH/CM1OVlxX/Ip3jYMTzEQcI9AAAAAAEAARnS3HeqjLYAEAAQB6qMtg',
+      channelName: 'ch2',
       joinSucceed: false,
       peerIds: [],
     };
