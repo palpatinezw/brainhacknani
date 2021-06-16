@@ -1,0 +1,40 @@
+functionality that can be definitely be showcased given the backend setup below:
+search
+call
+flairs
+create flairs
+choose/assign flairs
+leave
+pending users
+Other functionality could be showcased (just that im too stoned to think of it)
+ultimately what functionality u choose to showcase is up to u, and also dependent on the frontend functionality
+
+
+protagonists: flateartherbobby (aka febo), antivaxmike
+circles febo is in: govdenier, moh research dept
+
+users: (format: username/password)
+flateartherbobby/guitar10
+antivaxmike/42ostrich
+all other members of the govdenier and moh research dept circles have password 1 (literal integer 1)
+
+
+flairs in govdenier: (owned by febo) (is where the theoretical call in the script happens with users of flair "woke for 5 years")
+woke for 5 years
+woke for 3 years
+woke for 1 year
+unwoke
+members: tswift, edsheer, tomc, jenniferpezz, febo, antivaxmike
+
+flairs in moh research dept: (owned by bob/don)
+vaccine researcher
+animal researcher
+alien researcher
+members: bob, george, beorge, heorge (pending - user requested to join but mod not accepted yet), jetli, febo
+
+
+ALL following circles are owned by jon/hsa, with no users/flairs
+(mainly for search functionality when searching for "govdenier" but can be used for join/leave if u want)
+(all are public except for govdenier HQ)
+circles: govdenier HQ, anti govdeniers, govdenier-deniers (continued on next line)
+gokarters, governor dressup squad, googlers, goldfish, a-go-go, ergonomists

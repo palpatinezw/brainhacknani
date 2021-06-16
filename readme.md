@@ -8,6 +8,10 @@ I love creating backends from scratch. aw yeah
 - [Circle Data](https://github.com/palpatinezw/brainhacknani/tree/backend#circle-data)
 - [Example implementation](https://github.com/palpatinezw/brainhacknani/tree/backend#example-implementation-with-fetch)
 
+# Help and Logs
+
+If you wish to create a video recording demonstrating functionality of the app, refer to help.txt for more information. For reference, logs.txt contains ALL the calls used to set-up the backend as needed (users bob and jon were created beforehand).
+
 # API endpoints:
 
 ## Users
