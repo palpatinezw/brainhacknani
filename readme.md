@@ -1,12 +1,12 @@
-# Backend Documentation
+# Backend Documentation for Sigma
 
 I love creating backends from scratch. aw yeah
 
-- Users
-- Flairs
-- Admissions
-- Circle Data
-- Example implementation
+- [Users](https://github.com/palpatinezw/brainhacknani/tree/backend#users)
+- [Flairs](https://github.com/palpatinezw/brainhacknani/tree/backend#flairs)
+- [Admissions](https://github.com/palpatinezw/brainhacknani/tree/backend#admissions)
+- [Circle Data](https://github.com/palpatinezw/brainhacknani/tree/backend#circle-data)
+- [Example implementation](https://github.com/palpatinezw/brainhacknani/tree/backend#example-implementation-with-fetch)
 
 # API endpoints:
 
