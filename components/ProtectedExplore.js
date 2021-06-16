@@ -15,11 +15,11 @@ import ProtectedJoinCommunity from './ProtectedJoinCommunity';
 const ProtectedExplore = ({ route, navigation }) => {
     const { username, password } = route.params;
     const [search, setSearch]=useState();
-    const [textvalue, settextvalue]=useState("Reccomended");
+    const [textvalue, settextvalue]=useState("Recommendations");
     const [results, setresults]=useState();
     const [ShowRecommended,setShowRecommended]= useState()
     const [ShowSearch,setShowSearch]=useState()
-
+    
     
 
   
@@ -47,7 +47,7 @@ const ProtectedExplore = ({ route, navigation }) => {
     useEffect(() => {
 
       if (search == null || search == ""){
-        settextvalue("Reccomendation")
+        settextvalue("Recommendations:")
         setShowRecommended(true)
         setShowSearch(false)
       }
@@ -98,11 +98,13 @@ const ProtectedExplore = ({ route, navigation }) => {
            password: password,
           circleName: item})
         }>
-           <Text>{item}</Text>
+           <Text style = {tailwind('text-lg mt-1 border-4 border-opacity-100')} >{item}</Text>
            </TouchableOpacity> 
         </View>
     )
 }
+
+
 function separator() {
     return (
      <View style={{height:8}}></View>
@@ -139,9 +141,9 @@ function separator() {
           </View>
 
          
-         
-          <Text>{textvalue}</Text>
-
+          <Text style = {tailwind('text-2xl mt-3 font-bold border-4 border-black border-opacity-100')}>{textvalue}</Text>
+     
+          
           {ShowRecommended ? <TouchableOpacity onPress={ () => navigation.navigate("Join",
       { 
       username: username,
@@ -149,7 +151,7 @@ function separator() {
        circleName: "Video Games"
      }) 
       } >
-        <Text>Video Games</Text>
+        <Text style = {tailwind('text-lg mt-3 bg-pink-100 border-4 rounded-lg border-black border-opacity-100')} >Video Games</Text>
   </TouchableOpacity>  : <Text></Text>}
   
         

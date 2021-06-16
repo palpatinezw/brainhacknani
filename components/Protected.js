@@ -11,6 +11,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import ProtectedProfile from './ProtectedProfile'
 import ProtectedExplore from './ProtectedExplore'
 import ProtectedHome from './ProtectedHome'
+import ProtectedJoinCommunity from './ProtectedJoinCommunity';
+import ProtectedCreateCommunity from './ProtectedCreateCommunity';
+
 
 import Ionicons from 'react-native-vector-icons/Ionicons'
 

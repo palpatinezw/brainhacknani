@@ -19,7 +19,7 @@ import { circle } from 'react-native/Libraries/Animated/src/Easing'
 
 export default function ProtectedJoinCommunity ({ route, navigation }) {
   let { username, password, circleName } = route.params
-  circleName = 'qui' // TODO: REMOVE
+  //circleName = 'qui' // TODO: REMOVE
   const [loadingData, setloadingData] = useState(true)
   const [circleInfo, setcircleInfo] = useState('sample circle info')
   const [loadingFlairData, setloadingFlairData] = useState(true)
@@ -126,10 +126,9 @@ export default function ProtectedJoinCommunity ({ route, navigation }) {
                 .then(assignRes => {
                     // TODO: go to home
                     // console.log("HERE")
-                    navigation.navigate("Home", {
-                        username: username,
-                        password: password
-                    })
+                    setloading(false)
+                    navigation.goBack()
+                  
                 })
             }
         }
@@ -138,12 +137,12 @@ export default function ProtectedJoinCommunity ({ route, navigation }) {
 
   return (
     <View style={tailwind('px-4 py-4')}>
-      <Text>{circleName}</Text>
-      <Text>Info: {loadingData ? 'still loading data, nerd' : circleInfo}</Text>
-      <Text>Choose a role: </Text>
+      <Text style ={tailwind('text-xl mt-1 font-bold border-4 border-opacity-100') }>{circleName}</Text>
+      <Text style ={tailwind('text-lg mt-1  border-4 border-opacity-100') }>Info: {loadingData ? 'still loading data, welcome' : circleInfo}</Text>
+      <Text style ={tailwind('text-base mt-1  border-4 border-opacity-100 font-bold' ) }>Choose a role: </Text>
       <FlatList
         extraData={refresh}
-        data={loadingFlairData ? ['still loading flair data, nerd'] : flairInfo}
+        data={loadingFlairData ? ['still loading flair data, welcome'] : flairInfo}
         renderItem={renderCircles}
         ItemSeparatorComponent={separator}
         keyExtractor={(item, index) => index.toString()}
