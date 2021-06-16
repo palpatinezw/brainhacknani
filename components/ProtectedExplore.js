@@ -18,6 +18,8 @@ const ProtectedExplore = ({ route, navigation }) => {
     const [textvalue, settextvalue]=useState("Recommendations");
     const [results, setresults]=useState();
     const [ShowRecommended,setShowRecommended]= useState()
+    const [ShowRecommended1,setShowRecommended1]= useState()
+    const [ShowRecommended2,setShowRecommended2]= useState()
     const [ShowSearch,setShowSearch]=useState()
     
     
@@ -49,11 +51,15 @@ const ProtectedExplore = ({ route, navigation }) => {
       if (search == null || search == ""){
         settextvalue("Recommendations:")
         setShowRecommended(true)
+        setShowRecommended1(true)
+        setShowRecommended2(true)
         setShowSearch(false)
       }
       else{
         settextvalue("Search Results")
         setShowRecommended(false)
+        setShowRecommended1(false)
+        setShowRecommended2(false)
         setShowSearch(true)
       }
      });
@@ -152,6 +158,26 @@ function separator() {
      }) 
       } >
         <Text style = {tailwind('text-lg mt-3 bg-pink-100 border-4 rounded-lg border-black border-opacity-100')} >Video Games</Text>
+  </TouchableOpacity>  : <Text></Text>}
+
+  {ShowRecommended1 ? <TouchableOpacity onPress={ () => navigation.navigate("Join",
+      { 
+      username: username,
+       password: password,
+       circleName: "Movies"
+     }) 
+      } >
+        <Text style = {tailwind('text-lg mt-3 bg-pink-100 border-4 rounded-lg border-black border-opacity-100')} >Shows</Text>
+  </TouchableOpacity>  : <Text></Text>}
+
+  {ShowRecommended2 ? <TouchableOpacity onPress={ () => navigation.navigate("Join",
+      { 
+      username: username,
+       password: password,
+       circleName: "Shows"
+     }) 
+      } >
+        <Text style = {tailwind('text-lg mt-3 bg-pink-100 border-4 rounded-lg border-black border-opacity-100')} >Movies</Text>
   </TouchableOpacity>  : <Text></Text>}
   
         

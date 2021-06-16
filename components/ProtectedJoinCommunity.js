@@ -105,8 +105,14 @@ export default function ProtectedJoinCommunity ({ route, navigation }) {
   function separator () {
     return <View style={{ height: 5 }}></View>
   }
-
+function returntohome(){
+  navigation.navigate("Home", {
+    username: username,
+    password: password
+})
+}
   async function join() {
+    returntohome()
     await fetch(
         `http://flyyee-brainhackserver.herokuapp.com/join_circle?username=${username}&password=${password}&circleName=${circleName}`
     ).then(
@@ -126,8 +132,7 @@ export default function ProtectedJoinCommunity ({ route, navigation }) {
                 .then(assignRes => {
                     // TODO: go to home
                     // console.log("HERE")
-                    setloading(false)
-                    navigation.goBack()
+  
                   
                 })
             }
