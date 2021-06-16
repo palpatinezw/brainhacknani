@@ -3,8 +3,8 @@ import React, { useState, useEffect } from "react";
 import {
     Text, View, Button, TouchableOpacity, KeyboardAvoidingView, TextInput, Keyboard, Pressable
 } from "react-native";
-import Spinner from 'react-native-loading-spinner-overlay'
-import { CommonActions } from '@react-navigation/native'
+import Spinner from 'react-native-loading-spinner-overlay';
+import { CommonActions } from '@react-navigation/native';
 
 import tailwind from 'tailwind-rn'
 

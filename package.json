@@ -25,6 +25,7 @@
     "react-native-shape": "^1.1.2",
     "react-native-vector-icons": "^8.1.0",
     "react-native-web": "~0.13.12",
+    "react-spinners": "^0.11.0",
     "tailwind-rn": "^3.0.1"
   },
   "devDependencies": {
