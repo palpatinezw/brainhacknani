@@ -98,9 +98,7 @@ const ProtectedHomeMain = ({ route, navigation }) => {
 	//toggling filters
 	function toggleFilter(circleName, flair) {
 		if (!filter[circleName]) return
-		console.log(circles)
 		var tempfilter = filter
-		console.log(tempfilter[filterModal.name])
 		var flairid = tempfilter[filterModal.name].findIndex(o => o === flair)
 
 		if (flairid == -1) {
@@ -109,7 +107,6 @@ const ProtectedHomeMain = ({ route, navigation }) => {
 			tempfilter[filterModal.name].splice(flairid, 1)
 		}
 		setFilter(tempfilter)
-		console.log(filter)
 		setRefreshModal(!refreshModal)
 	}
 	//flatlist render for flairs
@@ -147,8 +144,6 @@ const ProtectedHomeMain = ({ route, navigation }) => {
 		setRefreshModal(!refreshModal)
 	}
 
-    console.log(filterModalVisible)
-
 	return (
 		<View style={tailwind('px-6 py-4')}>
             <Modal
@@ -183,7 +178,10 @@ const ProtectedHomeMain = ({ route, navigation }) => {
 				<View style={tailwind('flex-1 mt-4')}>
 					{ (!loading) && (
                         <>
-                            <Text style={tailwind('text-xl font-bold mb-2')}>My Communities</Text>
+                            <View style={tailwind('flex flex-row items-center mb-2')}>
+                                <Text style={tailwind('text-xl font-bold pr-3 mb-1.5')}>My Communities</Text>
+                                <Ionicons name={'refresh-circle'} size={30} color={'#1D4ED8'} onPress={loadCircles} />
+                            </View>
 
                             <FlatList
                                 data={circles} renderItem={renderCircles}
