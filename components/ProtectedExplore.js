@@ -1,6 +1,6 @@
 import { setStatusBarNetworkActivityIndicatorVisible } from 'expo-status-bar';
 import React, {useState, useEffect} from 'react'
-import { View, Text, TextInput, TouchableOpacity, Keyboard, Button } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Keyboard, Button, Pressable } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack"
 import { NavigationContainer } from '@react-navigation/native';
 import tailwind from 'tailwind-rn';
@@ -14,6 +14,7 @@ const ProtectedExplore = ({ route, navigation }) => {
     const { username, password } = route.params;
     const [search, setSearch]=useState();
     const [textvalue, settextvalue]=useState("Reccomended");
+    const [results, setresults]=useState("");
     const [reccommended,setreccommended]=useState(
         <TouchableOpacity onPress={ () => navigation.navigate("Description", 
         { }) 
@@ -45,16 +46,25 @@ const ProtectedExplore = ({ route, navigation }) => {
     // });
 
     function search2(){
-    fetch('https:/flyyee-brainhackserver.herokuapp.com/login?circle='+search)
-    .then(response => response.json())
+      
+
+      fetch(`http://flyyee-brainhackserver.herokuapp.com/search_circles?username=`+username+`&password=`+password+`&searchstring=`+search)
+   .then(response => response.json())
     .then(data => {
         console.log(search);
         
+        console.log (data);
+        
         if (data.success === 1) {
-            navigation.dispatch(CommonActions.reset({
-                index: 0,
-                routes: [{ name: 'ProtectedHome', params:{circle}}],
-            }))
+          console.log(true)
+
+          console.log(response.data)
+          
+          setresults(data.results); 
+            // navigation.dispatch(CommonActions.reset({
+            //     index: 0,
+            //     routes: [{ name: 'ProtectedHome', params:{searchstring}}],
+            // }))
         } else {
             console.log(false)
         }
@@ -68,6 +78,7 @@ const ProtectedExplore = ({ route, navigation }) => {
         onChangeText ={(text) => setSearch(text)} onFocus={search1}/>
         <Text>{textvalue}</Text>
         <Text>{reccommended}</Text>
+        <FlatList data={results} renderItem={renderCircles} ItemSeparatorComponent={separator} keyExtractor={(item, index) => index.toString()}/>
         <Button onPress={search2()} title="enter" />
         </View>
             );
@@ -77,7 +88,6 @@ const ProtectedExplore = ({ route, navigation }) => {
     
             settextvalue("Search Results")
             setreccommended("")
-            console.log(setSearch);
             }
             
     
@@ -88,10 +98,10 @@ const ProtectedExplore = ({ route, navigation }) => {
       
 
 
-    function Description( ) {
+    function ProtectedJoinCommunity( ) {
         return (
           <View>
-          <Text>" " </Text>
+          <Text>  </Text>
 
           </View>
         )
@@ -106,7 +116,7 @@ export default function ProtectedExploreStack({route}){
   return (
     <Stack.Navigator>
     <Stack.Screen name="Explore" component={ProtectedExplore} initialParams={{username, password}} />
-    <Stack.Screen name="Description" component={Description} initialParams={{username, password}} />
+    <Stack.Screen name="Description" component={ProtectedJoinCommunity} initialParams={{username, password}} />
     </Stack.Navigator>
   )
 }
