@@ -40,6 +40,7 @@ export default function ProtectedJoinCommunity ({ route, navigation }) {
     )
       .then(fetched => fetched.json())
       .then(ret => {
+          console.log(ret)
         if (ret.success == 1) {
           setcircleInfo(ret.circle.infoText)
         }
@@ -51,17 +52,17 @@ export default function ProtectedJoinCommunity ({ route, navigation }) {
   }
 
   function getFlairs () {
-    console.log('here')
+    // console.log('here')
     // return new Promise((res, err) => {
     fetch(
       `http://flyyee-brainhackserver.herokuapp.com/assign_flair_info?username=${username}&password=${password}&circleName=${circleName}&newuser=1`
     )
       .then(fetched => fetched.json())
       .then(ret => {
-        console.log(ret.success)
+        // console.log(ret.success)
         if (ret.success == 1) {
           let flairs = ret.availableFlairs
-          console.log(flairs)
+        //   console.log(flairs)
           for (let x = 0; x < flairs.length; x++) {
             flairs[x] = flairs[x].name
           }
@@ -86,7 +87,7 @@ export default function ProtectedJoinCommunity ({ route, navigation }) {
 
   function renderCircles ({ item }) {
     return (
-      <View style={tailwind('h-15 rounded-lg px-2 flex-row border-2')}>
+      <View style={tailwind('rounded-lg px-2 flex-row border-2')}>
         <TouchableOpacity
           onPress={() => {
             let fs = flairStatus
@@ -105,14 +106,8 @@ export default function ProtectedJoinCommunity ({ route, navigation }) {
   function separator () {
     return <View style={{ height: 5 }}></View>
   }
-function returntohome(){
-  navigation.navigate("Home", {
-    username: username,
-    password: password
-})
-}
+
   async function join() {
-    returntohome()
     await fetch(
         `http://flyyee-brainhackserver.herokuapp.com/join_circle?username=${username}&password=${password}&circleName=${circleName}`
     ).then(
@@ -132,7 +127,8 @@ function returntohome(){
                 .then(assignRes => {
                     // TODO: go to home
                     // console.log("HERE")
-  
+                    setloading(false)
+                    navigation.goBack()
                   
                 })
             }
